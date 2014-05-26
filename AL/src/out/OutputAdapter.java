@@ -9,8 +9,10 @@ import logmanager.Event;
 public interface OutputAdapter 
 {
 	public void setupConfig(Configuration config);
-	//boolean storeEvents(List<Event> batch);
+	public boolean storeEvents(List<Event> batch);
 	public String test(String tmp);
 	public void exec();
+	
+	
 }
 

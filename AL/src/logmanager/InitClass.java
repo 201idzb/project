@@ -1,6 +1,10 @@
 package logmanager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import out.OutputAdapter;
 
 
 
@@ -68,6 +72,33 @@ class AppCore
             
             Method runMethod = outputClass.getMethod("exec", new Class[] { });
             runMethod.invoke(outputInstance, new Object[] { });
+            
+            List<Event> batch= new ArrayList<Event>();
+            
+            
+            while(true) //wysy³anie logow
+            {
+            	try { Thread.sleep(500); } catch(InterruptedException ex) {Thread.currentThread().interrupt(); }
+            	
+            	
+            	System.out.println(queue.getActSize()+"#"+conf.getBatchSize());
+            	if(queue.getActSize()>conf.getBatchSize())
+            	{
+            		for (int i=0; i < conf.getBatchSize(); ++i) //pobranie elementow do btach
+            		{
+            			Event event=queue.sendEvents();
+            			batch.add(event);
+            		}
+            		
+	            	while(true) //wysylanie az pakiet zostanie odebrany
+	            	{    		
+	            		Method storeEventsMethod =outputClass.getMethod("storeEvents", new Class[] { List.class });
+	            		storeEventsMethod.invoke(outputInstance, new Object[] { batch });
+			            
+			            try { Thread.sleep(500); } catch(InterruptedException ex) {Thread.currentThread().interrupt(); }
+	            	}
+            	}
+            }
             
         } 
         catch (SecurityException e)         { e.printStackTrace(); } 

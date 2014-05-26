@@ -3,6 +3,7 @@ package out;
 import out.OutputAdapter;
 
 import java.sql.Timestamp;
+import java.util.Iterator;
 import java.util.List;
 
 import logmanager.Configuration;
@@ -18,7 +19,6 @@ public class TestO extends Thread implements OutputAdapter
 	
 	public TestO() { System.out.println("Utworzono Testowy Adapter Wyjœciowy"); }
 	public void setupConfig(Configuration config) { this.config=config; }
-	//public boolean storeEvents(List<Event> batch) { return false; }
     public String test(String tmp) { return tmp; }
     public void exec() { start(); }
     
@@ -32,5 +32,19 @@ public class TestO extends Thread implements OutputAdapter
     		System.out.println((queue.acceptEvent(a))?"Dodano Event":"Nie udalo sie dodac Eventu");
 		}*/
     	System.out.println("Odpalono adapter zapisu");
+    	while(true) {}
     }
+    
+	public boolean storeEvents(List<Event> batch) //funkcja przechwytujaca
+	{ 
+		System.out.println("przechwycono eventy");
+		for (Iterator iterator = batch.iterator(); iterator.hasNext();) 
+		{
+			Event event = (Event) iterator.next();
+			System.out.println(event );
+		}
+		
+		return false; 
+	}
+    
 }

@@ -24,27 +24,44 @@ public class QueueManager
 		QueueManager.maxSize=maxSize;
 	}
 	
+	private synchronized Event eventManager(boolean addOrDel, Event event)
+	{
+		if(addOrDel) //dodanie eventu
+		{
+			queue.add(event);
+			return null;
+		}
+		else //pobranie eventu
+		{
+			Event tmp=queue.remove(0);
+			return tmp;
+		}
+	}
+	
 	public boolean acceptEvent(Event event) //pobieranie eventow
 	{
 		if(actSize<maxSize)
 		{
-			queue.add(event);
+			eventManager(true, event);
 			++actSize;
 			return true;
 		}
 		else return false;
 	}
 	
-	public boolean sendEvents() //wysylanie eventow
+	public Event sendEvents() //wysylanie eventow
 	{
 		if(!queue.isEmpty())
 		{
-			Event tmp=queue.remove(0);
+			Event tmp=eventManager(false, null);
 			--actSize;
-			return true;
+			return tmp;
 		}
-		else return false; 
+		else { Event event=new Event(null, "pobrano pusty log", null); return event; }
 	}
+	
+	
+	public long getActSize() { return actSize; }
 	
 	//public boolean storeEvents(List<Event> batch) { return false; }
 	
