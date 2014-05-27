@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import out.OutputAdapter;
-
 
 
 
@@ -81,7 +79,7 @@ class AppCore
             	try { Thread.sleep(500); } catch(InterruptedException ex) {Thread.currentThread().interrupt(); }
             	
             	
-            	System.out.println(queue.getActSize()+"#"+conf.getBatchSize());
+            	//System.out.println(queue.getActSize()+"#"+conf.getBatchSize());
             	if(queue.getActSize()>conf.getBatchSize())
             	{
             		for (int i=0; i < conf.getBatchSize(); ++i) //pobranie elementow do btach
@@ -89,14 +87,19 @@ class AppCore
             			Event event=queue.sendEvents();
             			batch.add(event);
             		}
+            		boolean isOK=false;
             		
-	            	while(true) //wysylanie az pakiet zostanie odebrany
+	            	while(!isOK) //wysylanie az pakiet zostanie odebrany
 	            	{    		
-	            		Method storeEventsMethod =outputClass.getMethod("storeEvents", new Class[] { List.class });
-	            		storeEventsMethod.invoke(outputInstance, new Object[] { batch });
+	            		Method storeEventsMethod=outputClass.getMethod("storeEvents", new Class[] { List.class });
+	            		isOK= (boolean) storeEventsMethod.invoke(outputInstance, new Object[] { batch });
 			            
-			            try { Thread.sleep(500); } catch(InterruptedException ex) {Thread.currentThread().interrupt(); }
+			            if(!isOK) try { Thread.sleep(500); } catch(InterruptedException ex) {Thread.currentThread().interrupt(); }
 	            	}
+	            	
+	            	
+	            	//wyczyscie batcha poniewaz wysalo juz elemnty utworzenie nowej lsity szybsze niz clear.
+	            	batch= new ArrayList<Event>(); 
             	}
             }
             

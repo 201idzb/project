@@ -9,6 +9,7 @@ import logmanager.Event.LogLevel;
 
 public class TestI extends Thread implements InputAdapter 
 {
+	@SuppressWarnings("unused")
 	private Configuration config;
 	private QueueManager queue;
 	

@@ -3,7 +3,6 @@ package out;
 import java.util.List;
 
 import logmanager.Configuration;
-import logmanager.QueueManager;
 import logmanager.Event;
 
 public interface OutputAdapter 
