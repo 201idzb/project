@@ -3,11 +3,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-public class Configuration //zczytuje konfiguracjê aplikacji z pliku i odtwarza j¹ w formie obiektu Configuration.
+public class Configuration //zczytuje konfiguracjÄ™ aplikacji z pliku i odtwarza jÄ… w formie obiektu Configuration.
 {
 	private static String inputAdapter;
 	private static String outputAdapter;
+	private static String locInput, locOutput;
 	private static long maxDBSize;
 	private static long batchSize;
 	
@@ -32,9 +32,15 @@ public class Configuration //zczytuje konfiguracjê aplikacji z pliku i odtwarza 
 		    if ((tmpLine = bufferReader.readLine()) != null)  batchSize=Integer.parseInt(tmpLine); 
 		    else { bufferReader.close(); throw new RuntimeException("Plik konfiguracyjny zawiera niepelne dane"); }
 		    
+		    if ((tmpLine = bufferReader.readLine()) != null)  locInput=tmpLine; 
+		    else { bufferReader.close(); throw new RuntimeException("Plik konfiguracyjny zawiera niepelne dane"); }	
+		    
+		    if ((tmpLine = bufferReader.readLine()) != null)  locOutput=tmpLine; 
+		    else { bufferReader.close(); throw new RuntimeException("Plik konfiguracyjny zawiera niepelne dane"); }			    
+		    
 		    bufferReader.close();
 		} 
-		catch (IOException ex) { System.out.println("ERR: nie mo¿na odczyt pliku konfiguracyjnego("+ex+")"); }
+		catch (IOException ex) { System.out.println("ERR: nie moÅ¼na odczyt pliku konfiguracyjnego("+ex+")"); }
 	}
 	
 	
@@ -42,4 +48,6 @@ public class Configuration //zczytuje konfiguracjê aplikacji z pliku i odtwarza 
 	public String getOutputAdapter() { return outputAdapter; }
 	public long getMaxDBSize() { return maxDBSize; }
 	public long getBatchSize() { return batchSize; }
+	public String getLocInput() { return locInput; }
+	public String getLocOutput() { return locOutput; }
 }
