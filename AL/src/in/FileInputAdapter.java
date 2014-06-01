@@ -10,8 +10,8 @@ import logmanager.Event;
 
 public class FileInputAdapter extends Thread implements InputAdapter 
 {
-	private Configuration config;
-	private QueueManager queue;
+    private Configuration config;
+    private QueueManager queue;
 
     public String data = "";
     public String[] timestamp = new String[1000];
@@ -27,7 +27,7 @@ public class FileInputAdapter extends Thread implements InputAdapter
 		for(int i=0; i<loglevel.length; i++) loglevel[i] = "";
 		for(int i=0; i<details.length; i++) details[i] = "";
 		
-		System.out.println("Utworzono Adapter Wejœciowy"); 
+		System.out.println("Utworzono Adapter Wejsciowy"); 
 	}
 	
 	public void setupConfig(Configuration config) { this.config=config; }
@@ -56,7 +56,7 @@ public class FileInputAdapter extends Thread implements InputAdapter
     	try {
 			scanner = new Scanner(new File(config.getLocInput()));
 			System.out.println("Odczytano sciezke do pliku!");
-		} catch (FileNotFoundException e) {System.out.println("B³¹d odczytu pliku!");}
+		} catch (FileNotFoundException e) {System.out.println("Bï¿½ï¿½d odczytu pliku!");}
     	
 		while(scanner.hasNextLine()) {
 			data = scanner.nextLine();
