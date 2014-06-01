@@ -56,7 +56,7 @@ public class FileInputAdapter extends Thread implements InputAdapter
     	try {
 			scanner = new Scanner(new File(config.getLocInput()));
 			System.out.println("Odczytano sciezke do pliku!");
-		} catch (FileNotFoundException e) {System.out.println("B��d odczytu pliku!");}
+		} catch (FileNotFoundException e) {System.out.println("Blad odczytu pliku!");}
     	
 		while(scanner.hasNextLine()) {
 			data = scanner.nextLine();
