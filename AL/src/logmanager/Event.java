@@ -6,7 +6,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-
 //przyklad utworzenia eventu
 //Timestamp tmp = null;
 //Event a=new Event(tmp, "yolo", LogLevel.INFO);
@@ -19,7 +18,6 @@ public class Event
 	private String details;
 	private DateFormat df = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss.SSS");
 	private Date date;
-	
 	
 	public Timestamp getTimestamp() { return timestamp; }
 	public String getDetails()      { return details; }
