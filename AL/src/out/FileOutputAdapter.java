@@ -19,7 +19,7 @@ public class FileOutputAdapter extends Thread implements OutputAdapter
 	private Configuration config;
 	private Writer out;
 	private String tosave = "";
-	public FileOutputAdapter() { System.out.println("Utworzono Adapter Wyjœciowy"); }
+	public FileOutputAdapter() { System.out.println("Utworzono Adapter Wyjï¿½ciowy"); }
 	public void setupConfig(Configuration config) { this.config=config; }
     public String test(String tmp) { return tmp; }
     public void exec() { start(); }
@@ -38,16 +38,10 @@ public class FileOutputAdapter extends Thread implements OutputAdapter
 		{
 			Event event = (Event) iterator.next();
 			
-			tosave = tosave + 
-					"{Timestamp: \""
-			+ event.getTimestamp() + 
-					"\", Loglevel: \""
-			+ event.getLoglevel() + 
-					"\", Details: \""
-			+ event.getDetails() + 
-					"\"}"
-			+ System.getProperty("line.separator");
-		
+			tosave = tosave + "{Timestamp: \"" + event.getTimestamp() 
+					+ "\", Loglevel: \"" + event.getLoglevel() 
+					+ "\", Details: \"" + event.getDetails() 
+					+ "\"}" + System.getProperty("line.separator");
 		}
 		try {
 			System.out.println("Zapisuje do pliku...");
