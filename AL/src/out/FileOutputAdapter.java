@@ -16,11 +16,11 @@ import logmanager.Event;
 
 public class FileOutputAdapter extends Thread implements OutputAdapter 
 {
-	private Configuration config;
-	private Writer out;
-	private String tosave = "";
-	public FileOutputAdapter() { System.out.println("Utworzono Adapter Wyj�ciowy"); }
-	public void setupConfig(Configuration config) { this.config=config; }
+    private Configuration config;
+    private Writer out;
+    private String tosave = "";
+    public FileOutputAdapter() { System.out.println("Utworzono Adapter Wyj�ciowy"); }
+    public void setupConfig(Configuration config) { this.config=config; }
     public String test(String tmp) { return tmp; }
     public void exec() { start(); }
 
