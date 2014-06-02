@@ -8,78 +8,81 @@ import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
 
-public class FileInputAdapter extends Thread implements InputAdapter 
-{
-    private Configuration config;
-    private QueueManager queue;
 
-    public String data = "";
-    public String[] timestamp = new String[1000];
-    public String[] loglevel = new String[1000];
-    public String[] details = new String[1000];
-    public String[] parts;
-    private int iterations = 0;
-    
+public class FileInputAdapter extends Thread implements InputAdapter {
+	private Configuration config;
+	private QueueManager queue;
+
+    private String data = "";
+    private String[] timestamp = null;
+    private String[] loglevel = null;
+    private String[] details = null;
+    private String[] parts;
 	private Scanner scanner;
 	
-	public FileInputAdapter() { 
-		for(int i=0; i<timestamp.length; i++) timestamp[i] = "";
-		for(int i=0; i<loglevel.length; i++) loglevel[i] = "";
-		for(int i=0; i<details.length; i++) details[i] = "";
-		
+	public FileInputAdapter() {		
 		System.out.println("Utworzono Adapter Wejsciowy"); 
 	}
 	
-	public void setupConfig(Configuration config) { this.config=config; }
-	public void connectToQueueManager(QueueManager queue) { this.queue=queue; }
+	public void setupConfig(final Configuration config) { 
+		this.config = config;
+	}
+	public void connectToQueueManager(final QueueManager queue) { 
+		this.queue = queue;
+	}
 	
-    public String test(String tmp) { return tmp; }
     public void exec() { start(); }
     
-    public String setData(String data){
-    	this.data = data;
-    	return data;
-    }
-    
-    public String getData(){
-    	return data;
-    }
-    
-    public int setIterations(int index){
-    	this.iterations = index;
-    	return iterations;
-    }
-    
-    public void run()
-    {
-    	int index = 0;
+	@Override
+	public String test(final String tmp) { return null; }
+
+    public void run() {
     	try {
 			scanner = new Scanner(new File(config.getLocInput()));
 			System.out.println("Odczytano sciezke do pliku!");
-		} catch (FileNotFoundException e) {System.out.println("Blad odczytu pliku!");}
+		} catch (FileNotFoundException e) {
+			System.out.println("Blad odczytu pliku!");
+		}
     	
-		while(scanner.hasNextLine()) {
-			data = scanner.nextLine();
-			parts = data.split(" ");
+    	//dopoki jest nastepna linia
+		while (scanner.hasNextLine()) {
+		    timestamp = new String[(int) config.getBatchSize()];
+		    loglevel = new String[(int) config.getBatchSize()];
+		    details = new String[(int) config.getBatchSize()];
 			
-			if(!(data.equals(""))){ //jesli nie jest to pusta linia
-				timestamp[index] = data.substring(1, 0 + parts[0].length()-1);
-				loglevel[index] = data.substring(parts[0].length()+1, parts[0].length()+1 + parts[1].length());
-				details[index] = data.substring(parts[0].length() + parts[1].length() + 3, data.length());
+		    for (int i = 0; i < config.getBatchSize(); ++i) {	
+		    	//jezeli nie ma nastepnej linii to konczy
+		    	if (!scanner.hasNextLine()) { break; } 
+				data = scanner.nextLine();
+				parts = data.split(" "); //wyszukiwanie spacji
 				
-				index += 1;
+				//jesli nie jest to pusta linia
+				if (!(data.equals(""))) { 
+					timestamp[i] = data.substring(1, 0 + parts[0].length() - 1);
+					
+					loglevel[i] = data.substring(parts[0].length() + 1,
+							parts[0].length() + 1 + parts[1].length());
+					
+					details[i] = data.substring(parts[0].length() 
+							+ parts[1].length() + 3,
+							data.length());
+				}
+			}
+		    
+		    //tworzenie zdarzen
+		    for (int i = 0; i < config.getBatchSize(); ++i) {
+		    	if (timestamp[i] == null) { break; }
+				Event a = new Event(timestamp[i], loglevel[i], details[i]);
+				System.out.println((queue.acceptEvent(a)) 
+					? "Dodano Event(" + timestamp[i] + "," + " " 
+						+ loglevel[i] + "," + " " 
+						+ details[i] + ")" 
+					: "Nie udalo sie dodac Eventu(" + timestamp[i] + "," + " " 
+						+ loglevel[i] + "," + " " 
+						+ details[i] + ")");
 			}
 		}
-		
-		setIterations(index);
 		System.out.println("Odczytano plik!");
 		scanner.close();
-		setData(data);
-		
-    	for (int i = 0; i < iterations; i++) 
-    	{
-			Event a = new Event(timestamp[i], loglevel[i], details[i]);
-    		System.out.println((queue.acceptEvent(a))?"Dodano Event(" + timestamp[i] + ", " + loglevel[i] + ", " + details[i] + ")":"Nie udalo sie dodac Eventu(" + timestamp[i] + ", " + loglevel[i] + ", " + details[i] + ")");
-		}
     }
 }
