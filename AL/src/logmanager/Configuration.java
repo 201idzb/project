@@ -19,129 +19,52 @@ public class Configuration {
 	private static long maxDBSize;
 	private static long batchSize;
 	private static String port, DBName, DBHost, DBUserName, DBPassword, DBTableName;
+	private final static String delimiter=":";
+	
+	private String getValFromLine(String tmpLine)
+	{
+	    if (tmpLine != null) {
+	    	if(tmpLine.contains(delimiter)) {
+	    		tmpLine=tmpLine.substring(tmpLine.indexOf(delimiter)+1);
+	    	}
+	    	return tmpLine; 
+	    } else throw new RuntimeException("Plik konfiguracyjny zawiera niepelne dane");
+	}
+	
+	private Integer getValFromLineInInt(String tmpLine)
+	{
+	    if (tmpLine != null) {
+	    	if(tmpLine.contains(delimiter)) {
+	    		tmpLine=tmpLine.substring(tmpLine.indexOf(delimiter)+1);
+	    	} 
+	    	return Integer.parseInt(tmpLine); 
+	    } else throw new RuntimeException("Plik konfiguracyjny zawiera niepelne dane");
+	}
+	
 	/**
 	 * Konstruktor objektu typu Configuration
 	 */
 	public Configuration() {
 		try {
-			String tmpLine;
-			
+		
 			//tworzy plik konfiguracyjny conf.dat
 			FileReader confHandle = new FileReader("conf.dat");
 			BufferedReader bufferReader = new BufferedReader(confHandle);
 			
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	inputAdapter = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
+			inputAdapter=getValFromLine(bufferReader.readLine());
+			outputAdapter=getValFromLine(bufferReader.readLine());
+			maxDBSize=getValFromLineInInt(bufferReader.readLine());
+			batchSize=getValFromLineInInt(bufferReader.readLine());
+			locInput=getValFromLine(bufferReader.readLine());
+			locOutput=getValFromLine(bufferReader.readLine());
+			port=getValFromLine(bufferReader.readLine());
+			DBName=getValFromLine(bufferReader.readLine());
+			DBHost=getValFromLine(bufferReader.readLine());
+			DBUserName=getValFromLine(bufferReader.readLine());
+			DBPassword=getValFromLine(bufferReader.readLine());
+			DBTableName=getValFromLine(bufferReader.readLine());
 		    
-		    tmpLine = bufferReader.readLine();
-		    
-		    if (tmpLine != null)  { 
-		    	outputAdapter = tmpLine; 
-		    } else { 
-		    	bufferReader.close(); 
-		    	throw new RuntimeException(
-		    			"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-		    tmpLine = bufferReader.readLine();
-		    
-		    if (tmpLine != null)  { 
-		    	maxDBSize = Integer.parseInt(tmpLine); 
-		    } else { 
-		    	bufferReader.close(); 
-		    	throw new RuntimeException(
-		    			"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-		    tmpLine = bufferReader.readLine();
-		    
-		    if (tmpLine != null)  { 
-		    	batchSize = Integer.parseInt(tmpLine); 
-		    } else { 
-		    	bufferReader.close(); 
-		    	throw new RuntimeException(
-		    			"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-		    tmpLine = bufferReader.readLine();
-		    
-		    if (tmpLine != null)  { 
-		    	locInput = tmpLine; 
-		    } else { 
-		    	bufferReader.close(); 
-		    	throw new RuntimeException(
-		    			"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }	
-		    
-		    tmpLine = bufferReader.readLine();
-		    
-		    if (tmpLine != null)  { 
-		    	locOutput = tmpLine; 
-		    } else { 
-		    	bufferReader.close(); 
-		    	throw new RuntimeException(
-		    			"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }			    
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	port = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	DBName = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	DBHost = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	DBUserName = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	DBPassword = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
-		    
-			tmpLine = bufferReader.readLine();
-			
-		    if (tmpLine != null) { 
-		    	DBTableName = tmpLine; 
-		    } else { bufferReader.close(); 
-		    throw new RuntimeException(
-		    		"Plik konfiguracyjny zawiera niepelne dane"); 
-		    }
+
 		    
 		    bufferReader.close();
 		} catch (IOException ex) { 

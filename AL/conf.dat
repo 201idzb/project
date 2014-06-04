@@ -1,12 +1,12 @@
-TestI
-TestO
-100000
-10
-server.log.1
-save.txt
-3306
-al
-localhost
-root
-
-logs
+Adapter Wejsciowy :TestI
+Adapter Wyjsciowy :TestO
+Max ilosc zbuforowanych logow :100000
+Rozmiar Batch :10
+Plik do odczytu logow :server.log.1
+Plik do zapisu logow :save.txt
+Port :3306
+Nazwa bazy :al
+Adres bazy :localhost
+User bazy :root
+Haslo bazy :
+Tabela bazy :logs

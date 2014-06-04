@@ -72,6 +72,12 @@ public class Event {
 	public Event(final Timestamp timestamp, final String logLevel, final String details) {
 		this.timestamp = timestamp;
 		this.details = details;
-		this.logLevel = LogLevel.valueOf(logLevel);
+		try {
+			this.logLevel = LogLevel.valueOf(logLevel);
+		} catch (IllegalArgumentException e) { 
+			//e.printStackTrace(); 
+			System.out.println("Nadano wartosc WARNING dla LogLevel w zdarzeniu z blednym LogLevel!"); 
+			this.logLevel = LogLevel.WARNING; 
+		}
 	}
 }
