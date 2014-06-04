@@ -49,7 +49,10 @@ public class Event {
 	 * @param timestamp data zajœcia zdarzenia podana w formie stringa
 	 * @param logLevel typ zdarzenia
 	 * @param details informacje o zdarzeniu
+	 * @deprecated metoda przestarzlaa nalezy uzyc jej przeciazonego odpowiednika ! 
+	 * 
 	 */
+	@Deprecated
 	public Event(final String timestamp, final String logLevel, final String details) {
 		try {
 			date = (Date) df.parse(timestamp);

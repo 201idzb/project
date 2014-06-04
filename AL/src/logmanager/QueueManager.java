@@ -1,6 +1,7 @@
 package logmanager;
 
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +58,7 @@ public class QueueManager {
 	/**
 	 * wysylanie eventow
 	 * @return jeœli kolejka zawiera logi zwróci zdarzenie, a jeœli nie zawiera zwróci zdarzenie zawieraj¹ce opis: "pobrano pusty log"
+	 * 
 	 */
 	public Event sendEvents() {
 		if (!queue.isEmpty()) {
@@ -65,7 +67,8 @@ public class QueueManager {
 			//System.out.println(actSize);
 			return tmp; 
 		} else { 
-			Event event = new Event("1970-01-01 00:00:00.0", "pobrano pusty log", null);
+			Timestamp tmpTime=new Timestamp(0);
+			Event event = new Event(tmpTime, "pobrano pusty log", null);
 			return event; 
 		}
 	}
