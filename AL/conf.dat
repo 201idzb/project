@@ -1,6 +1,12 @@
 FileInputAdapter
-FileOutputAdapter
+DBOutputAdapter
 100000
 10
 server.log.1
 save.txt
+3306
+al
+localhost
+root
+
+logs
