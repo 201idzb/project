@@ -1,7 +1,6 @@
 
 package logmanager;
 import java.io.BufferedReader;
-
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -19,6 +18,7 @@ public class Configuration {
 	private static String locInput, locOutput;
 	private static long maxDBSize;
 	private static long batchSize;
+	private static String port, DBName, DBHost, DBUserName, DBPassword, DBTableName;
 	/**
 	 * Konstruktor objektu typu Configuration
 	 */
@@ -89,6 +89,60 @@ public class Configuration {
 		    			"Plik konfiguracyjny zawiera niepelne dane"); 
 		    }			    
 		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	port = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	DBName = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	DBHost = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	DBUserName = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	DBPassword = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
+			tmpLine = bufferReader.readLine();
+			
+		    if (tmpLine != null) { 
+		    	DBTableName = tmpLine; 
+		    } else { bufferReader.close(); 
+		    throw new RuntimeException(
+		    		"Plik konfiguracyjny zawiera niepelne dane"); 
+		    }
+		    
 		    bufferReader.close();
 		} catch (IOException ex) { 
 			System.out.println(
@@ -127,4 +181,10 @@ public class Configuration {
 	 * @return zwraca plik wyjœciowy
 	 */
 	public String getLocOutput() { return locOutput; }
+	public String getPort() {return port;}
+	public String getDBName() {return DBName;}
+	public String getDBHost() {return DBHost;}
+	public String getDBUserName() {return DBUserName;}
+	public String getDBPassword() {return DBPassword;}
+	public String getDBTableName() {return DBTableName;}
 }
