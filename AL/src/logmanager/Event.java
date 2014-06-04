@@ -46,7 +46,7 @@ public class Event {
 	
 	/**
 	 * konstruktor do stworzenia Eventu
-	 * @param timestamp data zajœcia zdarzenia
+	 * @param timestamp data zajœcia zdarzenia podana w formie stringa
 	 * @param logLevel typ zdarzenia
 	 * @param details informacje o zdarzeniu
 	 */
@@ -56,6 +56,18 @@ public class Event {
 		} catch (ParseException e) { e.printStackTrace(); }
 		
 		this.timestamp = new Timestamp(date.getTime());
+		this.details = details;
+		this.logLevel = LogLevel.valueOf(logLevel);
+	}
+	
+	/**
+	 * konstruktor do stworzenia Eventu
+	 * @param timestamp data zajœcia zdarzenia podana w formie timestamp
+	 * @param logLevel typ zdarzenia
+	 * @param details informacje o zdarzeniu
+	 */
+	public Event(final Timestamp timestamp, final String logLevel, final String details) {
+		this.timestamp = timestamp;
 		this.details = details;
 		this.logLevel = LogLevel.valueOf(logLevel);
 	}

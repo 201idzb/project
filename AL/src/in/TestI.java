@@ -1,5 +1,7 @@
 package in;
 
+import java.sql.Timestamp;
+
 import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
@@ -32,12 +34,19 @@ public class TestI extends Thread implements InputAdapter {
     public void exec() { start(); }
     
     public void run() {
-    	for (int i = 0; i < 110; i++) {
-    		Event a = new Event("timestamp", "logLevel", "details");
-    		
+    	//for (int i = 0; i < 110000; i++) {
+    	while(true) {
+    		Timestamp x=new Timestamp(500000);
+    		Event a = new Event(x, "WARNING", "details");
     		System.out.println((queue.acceptEvent(a)) 
     				? "Dodano Event" 
     				: "Nie udalo sie dodac Eventu");
+    		try {
+    			Thread.sleep(1);
+    			} catch (InterruptedException ex) {
+    				Thread.currentThread().interrupt();
+    			} 
+    		
 		}
     }
 }

@@ -1,5 +1,6 @@
 package logmanager;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,9 +62,10 @@ public class QueueManager {
 		if (!queue.isEmpty()) {
 			Event tmp = eventManager(false, null);
 			--actSize;
+			//System.out.println(actSize);
 			return tmp; 
 		} else { 
-			Event event = new Event(null, "pobrano pusty log", null);
+			Event event = new Event("1970-01-01 00:00:00.0", "pobrano pusty log", null);
 			return event; 
 		}
 	}
