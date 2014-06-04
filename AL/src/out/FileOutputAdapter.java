@@ -11,7 +11,11 @@ import java.util.List;
 
 import logmanager.Configuration;
 import logmanager.Event;
-
+/**
+ * wyjœciowy adapter zapisu do pliku
+ * @author Mateusz Ratajczyk
+ *
+ */
 public class FileOutputAdapter extends Thread implements OutputAdapter {
     private Configuration config;
     private Writer out;
@@ -41,7 +45,6 @@ public class FileOutputAdapter extends Thread implements OutputAdapter {
     	}  
     }
     
-    //funkcja przechwytujaca zdarzenia
 	public boolean storeEvents(final List<Event> batch) { 
 		//System.out.println("FileOutputAdapter - Przechwycono zdarzenia.");
 		for (@SuppressWarnings("rawtypes") Iterator iterator = batch.iterator();

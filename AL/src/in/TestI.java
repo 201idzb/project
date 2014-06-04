@@ -3,7 +3,11 @@ package in;
 import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
-
+/**
+ * testowy adapter wejœciowy
+ * @author Kajetan Hryñczuk
+ *
+ */
 public class TestI extends Thread implements InputAdapter {
 	@SuppressWarnings("unused")
 	private Configuration config;

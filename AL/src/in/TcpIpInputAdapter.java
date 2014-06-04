@@ -13,7 +13,11 @@ import java.net.Socket;
 import logmanager.Configuration;
 import logmanager.Event;
 import logmanager.QueueManager;
-
+/**
+ * wejœciowy adapter odczytu z TCP/IP
+ * @author Albert Ka³kowski
+ *
+ */
 public class TcpIpInputAdapter extends Thread implements InputAdapter {
 	
 	private Configuration config;

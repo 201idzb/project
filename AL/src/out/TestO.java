@@ -6,7 +6,11 @@ import java.util.List;
 import logmanager.Configuration;
 import logmanager.Event;
 import logmanager.QueueManager;
-
+/**
+ * testowy adapter zapisu
+ * @author Kajetan Hryñczuk
+ *
+ */
 public class TestO extends Thread implements OutputAdapter {
 	@SuppressWarnings("unused")
 	private Configuration config;

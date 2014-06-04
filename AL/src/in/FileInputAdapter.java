@@ -8,7 +8,11 @@ import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
 
-
+/**
+ * Wejœciowy adapter zapisu
+ * @author Mateusz Ratajczyk
+ *
+ */
 public class FileInputAdapter extends Thread implements InputAdapter {
 	private Configuration config;
 	private QueueManager queue;
@@ -23,7 +27,6 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	public FileInputAdapter() {		
 		System.out.println("Utworzono Adapter Wejsciowy"); 
 	}
-	
 	public void setupConfig(final Configuration config) { 
 		this.config = config;
 	}
@@ -35,7 +38,6 @@ public class FileInputAdapter extends Thread implements InputAdapter {
     
 	@Override
 	public String test(final String tmp) { return null; }
-
     public void run() {
     	try {
 			scanner = new Scanner(new File(config.getLocInput()));

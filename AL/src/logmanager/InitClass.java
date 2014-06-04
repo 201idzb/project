@@ -3,7 +3,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * klasa realizuj¹ca zadanie rdzenia aplikacji
+ * @author Kajetan Hryñczuk
+ *
+ */
 class AppCore {	
 	private static Configuration conf;
 	private static Class<?> inputClass = null;
@@ -11,7 +15,9 @@ class AppCore {
 	private static Class<?> outputClass = null;
 	private static Object outputInstance = null;
 	private static QueueManager queue = null;
-	
+	/**
+	 * Konstruktor objektu Appcore
+	 */
 	AppCore() {
 		System.out.println("Rozpoczynam start rdzenia");
 		
@@ -127,8 +133,16 @@ class AppCore {
         }
 	}
 }
-
+/**
+ * Klasa inicjalizuj¹ca aplikacje
+ * @author Kajetan Hryñczuk
+ *
+ */
 public class InitClass {
+	/**
+	 * Metoda inicjalizuj¹ca aplikacje
+	 * @param args argumenty wejœciowe aplikacji
+	 */
     public static void main(final String[] args) {
     	System.out.println("Start aplikacji...");
     			
