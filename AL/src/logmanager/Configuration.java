@@ -11,14 +11,22 @@ import java.io.IOException;
  * @author Kajetan Hryñczuk
  */
 public class Configuration {
+    /**  Wejsciowy adapter.  */
 	private static String inputAdapter;
+	/**  Wyjsciowy adapter.  */
 	private static String outputAdapter;
+	/**  PLiki odczytu i zapisu .  */
 	private static String locInput, locOutput;
+	/**  Maksymlana ilosc przechowywanych logow w programie.  */
 	private static long maxDBSize;
+	/**  Rozmiar paczki logow.  */
 	private static long batchSize;
-	private static String port, DBName, DBHost, DBUserName, DBPassword,
-			DBTableName;
-	private final static String delimiter = ":";
+	/**  Konfiguracja bazy danych.  */
+	private static String port, dbName, dbHost, dbUserName, dbPassword,
+			dbTableName;
+
+	/**  podzielnik pliku konfiguracyjnego.  */
+	private static final String delimiter = ":";
 
 	private String getValFromLine(final String tmpLineArg) {
 		String  tmpLine = tmpLineArg;
@@ -70,11 +78,11 @@ public class Configuration {
 			locInput = getValFromLine(bufferReader.readLine());
 			locOutput = getValFromLine(bufferReader.readLine());
 			port = getValFromLine(bufferReader.readLine());
-			DBName = getValFromLine(bufferReader.readLine());
-			DBHost = getValFromLine(bufferReader.readLine());
-			DBUserName = getValFromLine(bufferReader.readLine());
-			DBPassword = getValFromLine(bufferReader.readLine());
-			DBTableName = getValFromLine(bufferReader.readLine());
+			dbName = getValFromLine(bufferReader.readLine());
+			dbHost = getValFromLine(bufferReader.readLine());
+			dbUserName = getValFromLine(bufferReader.readLine());
+			dbPassword = getValFromLine(bufferReader.readLine());
+			dbTableName = getValFromLine(bufferReader.readLine());
 
 			bufferReader.close();
 		} catch (IOException ex) {
@@ -143,22 +151,22 @@ public class Configuration {
 	}
 
 	public final String getDBName() {
-		return DBName;
+		return dbName;
 	}
 
 	public final String getDBHost() {
-		return DBHost;
+		return dbHost;
 	}
 
 	public final String getDBUserName() {
-		return DBUserName;
+		return dbUserName;
 	}
 
 	public final String getDBPassword() {
-		return DBPassword;
+		return dbPassword;
 	}
 
 	public final String getDBTableName() {
-		return DBTableName;
+		return dbTableName;
 	}
 }
