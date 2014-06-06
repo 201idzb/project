@@ -7,50 +7,73 @@ import logmanager.Configuration;
 import logmanager.Event;
 import logmanager.QueueManager;
 /**
- * testowy adapter zapisu
+ * testowy adapter zapisu.
  * @author Kajetan Hryñczuk
  *
  */
 public class TestO extends Thread implements OutputAdapter {
-	@SuppressWarnings("unused")
-	private Configuration config;
-	@SuppressWarnings("unused")
-	private QueueManager queue;
-	
-	public TestO() { 
-		System.out.println("Utworzono Testowy Adapter Wyjœciowy");
-	}
-	public void setupConfig(final Configuration config) { 
-		this.config = config;
-	}
-    public String test(final String tmp) { 
-    	return tmp;
+/** obiekt zawierajacy konfiguracje. */
+@SuppressWarnings("unused")
+private Configuration config;
+/** obiekt zawierajacy kolejke. */
+@SuppressWarnings("unused")
+private QueueManager queue;
+
+/** konstruktor. */
+public TestO() {
+System.out.println("Utworzono Testowy Adapter Wyjœciowy");
+}
+
+/**
+ * przypisanie obiektu konf.
+ * @param configTmp obiekt do zapisania
+ */
+public final void setupConfig(final Configuration configTmp) {
+this.config = configTmp;
+}
+/**
+ * funkcja testowa.
+ * @param tmp testowe wejscie
+ * @return wypisanie wejscia
+ */
+    public final String test(final String tmp) {
+    return tmp;
     }
-    
-    public void exec() { start(); }
-    
-    public void run() {
-    	System.out.println("Odpalono adapter zapisu");
-    	
-    	//utrzymywanie watku przy zyciu
-    	while (true) {
-    		try {
-    			Thread.sleep(500);
-    			} catch (InterruptedException ex) {
-    				Thread.currentThread().interrupt();
-    			} 
-    		}  
+
+    /**
+     * funkcja wzwolania.
+     */
+    public final void exec() { start(); }
+
+    /**
+     * funkcja uruchamiajaca.
+     */
+    public final void run() {
+    System.out.println("Odpalono adapter zapisu");
+
+    //utrzymywanie watku przy zyciu
+    while (true) {
+    try {
+    Thread.sleep(500);
+    } catch (InterruptedException ex) {
+    Thread.currentThread().interrupt();
     }
-    
-    //funkcja przechwytujaca
-	public boolean storeEvents(final List<Event> batch) { 
-		System.out.println("przechwycono eventy");
-		for (@SuppressWarnings("rawtypes") Iterator iterator = batch.iterator(); iterator.hasNext();) 
-		{
-			Event event = (Event) iterator.next();
-			System.out.println(event);
-		}
-		
-		return true; //jesli ok
-	}
+    }
+    }
+
+    /**
+     * funkcja przechwytujaca.
+     * @param batch lista zarzen do wyslania
+     * @return true jesli odebralo false jesli nie
+     */
+public final boolean storeEvents(final List<Event> batch) {
+System.out.println("przechwycono eventy");
+for (@SuppressWarnings("rawtypes") Iterator iterator =
+batch.iterator(); iterator.hasNext();) {
+Event event = (Event) iterator.next();
+System.out.println(event);
+}
+
+return true; //jesli ok
+}
 }
