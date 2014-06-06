@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
  * @author Kajetan Hryñczuk
  *
  */
-public class Event {	
+public class Event {
 	/**
 	 * typy zdarzeñ
 	 * @author Kajetan Hryñczuk
@@ -24,7 +24,8 @@ public class Event {
 	private Timestamp timestamp;
 	private LogLevel logLevel;
 	private String details;
-	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private DateFormat df = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS");
 	private Date date;
 	
 	//metody zwracajace Timestamp, details i LogLevel
@@ -46,38 +47,41 @@ public class Event {
 	
 	/**
 	 * konstruktor do stworzenia Eventu
-	 * @param timestamp data zajœcia zdarzenia podana w formie stringa
-	 * @param logLevel typ zdarzenia
-	 * @param details informacje o zdarzeniu
+	 * @param timestampTmp data zajœcia zdarzenia podana w formie stringa
+	 * @param logLevelTmp typ zdarzenia
+	 * @param detailsTmp informacje o zdarzeniu
 	 * @deprecated metoda przestarzlaa nalezy uzyc jej przeciazonego odpowiednika ! 
 	 * 
 	 */
 	@Deprecated
-	public Event(final String timestamp, final String logLevel, final String details) {
+	public Event(final String timestampTmp, final String logLevelTmp,
+			final String detailsTmp) {
 		try {
-			date = (Date) df.parse(timestamp);
+			date = (Date) df.parse(timestampTmp);
 		} catch (ParseException e) { e.printStackTrace(); }
-		
 		this.timestamp = new Timestamp(date.getTime());
-		this.details = details;
-		this.logLevel = LogLevel.valueOf(logLevel);
+		this.details = detailsTmp;
+		this.logLevel = LogLevel.valueOf(logLevelTmp);
 	}
 	
 	/**
 	 * konstruktor do stworzenia Eventu
-	 * @param timestamp data zajœcia zdarzenia podana w formie timestamp
-	 * @param logLevel typ zdarzenia
-	 * @param details informacje o zdarzeniu
+	 * @param timestampTmp data zajœcia zdarzenia podana w formie timestamp
+	 * @param logLevelTmp typ zdarzenia
+	 * @param detailsTmp informacje o zdarzeniu
 	 */
-	public Event(final Timestamp timestamp, final String logLevel, final String details) {
-		this.timestamp = timestamp;
-		this.details = details;
+	public Event(final Timestamp timestampTmp, final String logLevelTmp,
+			final String detailsTmp) {
+		this.timestamp = timestampTmp;
+		this.details = detailsTmp;
 		try {
-			this.logLevel = LogLevel.valueOf(logLevel);
-		} catch (IllegalArgumentException e) { 
-			//e.printStackTrace(); 
-			System.out.println("Nadano wartosc WARNING dla LogLevel w zdarzeniu z blednym LogLevel!"); 
-			this.logLevel = LogLevel.WARNING; 
+			this.logLevel = LogLevel.valueOf(logLevelTmp);
+		} catch (IllegalArgumentException e) {
+			//e.printStackTrace();
+			System.out.println("Nadano wartosc WARNING dla "
+					+ "LogLevel w zdarzeniu z "
+					+ "blednym LogLevel!");
+			this.logLevel = LogLevel.WARNING;
 		}
 	}
 }
