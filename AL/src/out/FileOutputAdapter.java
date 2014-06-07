@@ -12,40 +12,67 @@ import java.util.List;
 import logmanager.Configuration;
 import logmanager.Event;
 /**
- * wyjœciowy adapter zapisu do pliku
+ * wyjœciowy adapter zapisu do pliku.
  * @author Mateusz Ratajczyk
  *
  */
 public class FileOutputAdapter extends Thread implements OutputAdapter {
+	/**  Obiekt do klasy Configuration.  */
     private Configuration config;
+    /**  Zmienna do obslugi zapisywania danych do pliku.  */
     private Writer out;
+    /**  Zmienna do przechowywania linii z loga.  */
     private String tosave = "";
+    
+    /**  Konstruktor wypisujacy utworzenie adaptera.  */
     public FileOutputAdapter() { 
     	System.out.println("Utworzono Adapter Wyjsciowy");
     }
-    public void setupConfig(final Configuration config) { 
-    	this.config = config;
+    
+    /**
+     * Metoda sluzaca do polaczenia z obiektem
+     * konfiguracji za pomoca referencji z rdzenia aplikacji.
+     * @param cnfg obiekt zawierajacy konfiguracje
+     */
+    public final void setupConfig(final Configuration cnfg) { 
+    	this.config = cnfg;
     }
     
-    public String test(final String tmp) {
+    /**
+     * do obslugi funkcji testowej.
+     * @param tmp test
+     * @return null
+     */
+    public final String test(final String tmp) {
     	return tmp;
     }
     
-    public void exec() { start(); }
+	 /**
+     * funkcja wywolania.
+     */
+    public final void exec() { start(); }
 
-    
-    public void run() {
+    /**
+     * metoda obslugi watku.
+     */
+    public final void run() {
+    	final int timeToSleep = 500;
     	//utrzymywanie watku przy zyciu
     	while (true) {
     		try { 
-    			Thread.sleep(500); 
+    			Thread.sleep(timeToSleep); 
     		} catch (InterruptedException ex) { 
     			Thread.currentThread().interrupt(); 
     		}
     	}  
     }
     
-	public boolean storeEvents(final List<Event> batch) { 
+    /**
+     * metoda do przechwytywania Eventow.
+     * @param batch 
+     * @return true 
+     */
+	public final boolean storeEvents(final List<Event> batch) { 
 		//System.out.println("FileOutputAdapter - Przechwycono zdarzenia.");
 		for (@SuppressWarnings("rawtypes") Iterator iterator = batch.iterator();
 		iterator.hasNext();) {
