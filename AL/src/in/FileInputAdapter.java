@@ -8,37 +8,70 @@ import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
 
-/**
- * Wejœciowy adapter zapisu
+/** 
+ * Wejsciowy adapter zapisu.
  * @author Mateusz Ratajczyk
- *
- */
+*/
+
 public class FileInputAdapter extends Thread implements InputAdapter {
+	/**  Obiekt do klasy Configuration.  */
 	private Configuration config;
+	/**  Obiekt do klasy QueueManager.  */
 	private QueueManager queue;
 
+	/**  Zmienna do przechowywania linii z loga.  */
     private String data = "";
+    /**  Zmienna do przechowywania kolumny timestamp (czas zdarzenia). */
     private String[] timestamp = null;
+    /**  Zmienna do przechowywania kolumny loglevel (typ zdarzenia).  */
     private String[] loglevel = null;
+    /**  Zmienna do przechowywania kolumny details (opis zdarzenia).  */
     private String[] details = null;
+    /**  Zmienna do przechowywania kolejnych spacji w linii z loga.  */
     private String[] parts;
+    /**  Zmienna do obslugi zczytywania danych z pliku.  */
 	private Scanner scanner;
 	
+	/**  Konstruktor wypisujacy utworzenie adaptera.  */
 	public FileInputAdapter() {		
 		System.out.println("Utworzono Adapter Wejsciowy"); 
 	}
-	public void setupConfig(final Configuration config) { 
-		this.config = config;
-	}
-	public void connectToQueueManager(final QueueManager queue) { 
-		this.queue = queue;
+	
+	/**
+     * Metoda sluzaca do polaczenia z obiektem
+     * konfiguracji za pomoca referencji z rdzenia aplikacji.
+     * @param cnfg obiekt zawierajacy konfiguracje
+     */
+	public final void setupConfig(final Configuration cnfg) { 
+		this.config = cnfg;
 	}
 	
-    public void exec() { start(); }
+    /**
+     * Metoda sluzaca do polaczenia z obiektem
+     * kolejki za pomoca referencji z rdzenia aplikacji.
+     * @param que referencja do kolejki
+     */
+	public final void connectToQueueManager(final QueueManager que) { 
+		this.queue = que;
+	}
+	
+	 /**
+     * funkcja wywolania.
+     */
+    public final void exec() { start(); }
     
+	 /**
+     * do obslugi funkcji testowej.
+     * @param tmp test
+     * @return null
+     */
 	@Override
-	public String test(final String tmp) { return null; }
-    public void run() {
+	public final String test(final String tmp) { return null; }
+	
+	 /**
+     * metoda obslugi watku.
+     */
+    public final void run() {
     	try {
 			scanner = new Scanner(new File(config.getLocInput()));
 			System.out.println("Odczytano sciezke do pliku!");
@@ -66,7 +99,7 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 							parts[0].length() + 1 + parts[1].length());
 					
 					details[i] = data.substring(parts[0].length() 
-							+ parts[1].length() + 3,
+							+ parts[1].length() + 1 + 1 + 1,
 							data.length());
 				}
 			}
@@ -75,14 +108,19 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 		    for (int i = 0; i < config.getBatchSize(); ++i) {
 		    	if (timestamp[i] == null) { break; }
 				Event a = new Event(timestamp[i], loglevel[i], details[i]);
-				System.out.println((queue.acceptEvent(a)) 
-					? "Dodano Event(" + timestamp[i] + "," + " " 
-						+ loglevel[i] + "," + " " 
-						+ details[i] + ")" 
-					: "Nie udalo sie dodac Eventu(" + timestamp[i] + "," + " " 
-						+ loglevel[i] + "," + " " 
-						+ details[i] + ")");
-			}
+				
+				if (queue.acceptEvent(a)) {
+					System.out.println("Dodano Event(" 
+							+ timestamp[i] + ", " 
+							+ loglevel[i] + ", " 
+							+ details[i]); 
+				} else {
+					System.out.println("Nie udalo sie dodac Eventu("
+							+ timestamp[i] 
+							+ ", " + loglevel[i] 
+							+ ", " + details[i]); 
+				}
+		    }
 		}
 		System.out.println("Odczytano plik!");
 		scanner.close();
