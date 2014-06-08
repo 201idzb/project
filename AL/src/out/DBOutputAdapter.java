@@ -8,59 +8,92 @@ import java.util.List;
 
 import logmanager.Configuration;
 import logmanager.Event;
-import logmanager.QueueManager;
 
+/**
+ * wyjsciowy adapter zapisu do pliku.
+ * @author Konrad B³aszczuk
+ *
+ */
 public class DBOutputAdapter extends Thread implements OutputAdapter {
-
+	/**  Obiekt do klasy Configuration.  */
 	private Configuration config;
-	@SuppressWarnings("unused")
-	private QueueManager queue;
-	
+
+	/**  Konstruktor wypisujacy utworzenie adaptera.  */
 	public DBOutputAdapter() { 
 		System.out.println("Utworzono Adapter Wyjsciowy");
 	}
-	public void setupConfig(final Configuration config) { 
-		this.config = config;
+	
+    /**
+     * Metoda sluzaca do polaczenia z obiektem
+     * konfiguracji za pomoca referencji z rdzenia aplikacji.
+     * @param cnfg obiekt zawierajacy konfiguracje
+     */
+	public final void setupConfig(final Configuration cnfg) { 
+		this.config = cnfg;
 	}
-    public String test(final String tmp) { 
+	
+    /**
+     * do obslugi funkcji testowej.
+     * @param tmp test
+     * @return null
+     */
+    public final String test(final String tmp) { 
     	return tmp;
     }
     
-    public void exec() { start(); }
+	 /**
+     * funkcja wywolania.
+     */
+    public final void exec() { start(); }
     
-    public void run() {
+    /**
+     * metoda obslugi watku.
+     */
+    public final void run() {
     	System.out.println("Odpalono adapter zapisu");
-    	
+    	final int timeToSleep = 500;
     	//utrzymywanie watku przy zyciu
     	while (true) {
     		try {
-    			Thread.sleep(500);
+    			Thread.sleep(timeToSleep);
     			} catch (InterruptedException ex) {
     				Thread.currentThread().interrupt();
     			} 
     		}  
     }
     
-    //funkcja przechwytujaca
-	synchronized public boolean storeEvents(final List<Event> batch) { 
+    /**
+     * metoda do przechwytywania Eventow.
+     * @param batch 
+     * @return true 
+     */
+	public final synchronized boolean storeEvents(final List<Event> batch) { 
 		//polaczenie z baza
 
 		try {
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		Connection conn = DriverManager.getConnection("jdbc:mysql://" + config.getDBHost() + ":" + config.getPort() + "/" + config.getDBName(),
+		Connection conn = DriverManager.getConnection("jdbc:mysql://" 
+				+ config.getDBHost() 
+				+ ":" + config.getPort() 
+				+ "/" + config.getDBName(),
 				config.getDBUserName(), config.getDBPassword());
 		
 		//System.out.println("przechwycono eventy");
-		for (@SuppressWarnings("rawtypes") Iterator iterator = batch.iterator(); iterator.hasNext();) 
-		{
+		for (@SuppressWarnings("rawtypes") 
+		Iterator iterator = batch.iterator(); 
+		iterator.hasNext();) {
 			Event event = (Event) iterator.next();
 
 			//insert do bazy
 			Statement st = conn.createStatement();
-			st.executeUpdate("INSERT into logs VALUES(NULL, \""+ event.getTimestamp() +"\", \"" + event.getLoglevel() + "\", \"" + event.getDetails() + "\")");
-			
+			st.executeUpdate("INSERT into logs VALUES(NULL, \""
+					+ event.getTimestamp() 
+					+ "\", \"" 
+					+ event.getLoglevel() 
+					+ "\", \"" 
+					+ event.getDetails() 
+					+ "\")");
 
-			
 			//System.out.println(event);
 		}
 		//disconnect z bazy
