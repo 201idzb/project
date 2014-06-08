@@ -12,7 +12,7 @@ import java.util.List;
 import logmanager.Configuration;
 import logmanager.Event;
 /**
- * wyjœciowy adapter zapisu do pliku.
+ * wyjsciowy adapter zapisu do pliku.
  * @author Mateusz Ratajczyk
  *
  */
