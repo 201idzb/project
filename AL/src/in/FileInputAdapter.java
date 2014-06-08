@@ -2,6 +2,11 @@ package in;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import logmanager.Configuration;
@@ -9,8 +14,9 @@ import logmanager.QueueManager;
 import logmanager.Event;
 
 /** 
- * Wejsciowy adapter zapisu.
+ * wejsciowy adapter zapisu do pliku.
  * @author Mateusz Ratajczyk
+ * 
 */
 
 public class FileInputAdapter extends Thread implements InputAdapter {
@@ -18,6 +24,8 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	private Configuration config;
 	/**  Obiekt do klasy QueueManager.  */
 	private QueueManager queue;
+	/**  Tymczasowa zmienna do parsowania String`a na Timestamp.  */
+	private Timestamp tmpTime;
 
 	/**  Zmienna do przechowywania linii z loga.  */
     private String data = "";
@@ -31,6 +39,11 @@ public class FileInputAdapter extends Thread implements InputAdapter {
     private String[] parts;
     /**  Zmienna do obslugi zczytywania danych z pliku.  */
 	private Scanner scanner;
+    /**  Format czasu zdarzenia.  */
+    private DateFormat df = new SimpleDateFormat(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS");
+    /**  Czas zdarzenia wykorzystywany do rzutowania.  */
+    private Date date;
 	
 	/**  Konstruktor wypisujacy utworzenie adaptera.  */
 	public FileInputAdapter() {		
@@ -107,7 +120,13 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 		    //tworzenie zdarzen
 		    for (int i = 0; i < config.getBatchSize(); ++i) {
 		    	if (timestamp[i] == null) { break; }
-				Event a = new Event(timestamp[i], loglevel[i], details[i]);
+		    	
+		        try {
+		            date = (Date) df.parse(timestamp[i]);
+		        } catch (ParseException e) { e.printStackTrace(); }
+		        tmpTime = new Timestamp(date.getTime());
+		    	
+				Event a = new Event(tmpTime, loglevel[i], details[i]);
 				
 				if (queue.acceptEvent(a)) {
 					System.out.println("Dodano Event(" 
