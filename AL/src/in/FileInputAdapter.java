@@ -44,6 +44,8 @@ public class FileInputAdapter extends Thread implements InputAdapter {
             "yyyy-MM-dd'T'HH:mm:ss.SSS");
     /**  Czas zdarzenia wykorzystywany do rzutowania.  */
     private Date date;
+    /**  Zmienna do przechowywania czasu uspienia (w ms).  */
+    private final int timeToSleep = 1000;
 	
 	/**  Konstruktor wypisujacy utworzenie adaptera.  */
 	public FileInputAdapter() {		
@@ -128,17 +130,20 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 		    	
 				Event a = new Event(tmpTime, loglevel[i], details[i]);
 				
-				if (queue.acceptEvent(a)) {
-					System.out.println("Dodano Event(" 
-							+ timestamp[i] + ", " 
-							+ loglevel[i] + ", " 
-							+ details[i]); 
-				} else {
+				while (!queue.acceptEvent(a)) {
 					System.out.println("Nie udalo sie dodac Eventu("
 							+ timestamp[i] 
 							+ ", " + loglevel[i] 
 							+ ", " + details[i]); 
+					System.out.println("Ponawiam...");
+					try { Thread.sleep(timeToSleep);
+					}  catch (InterruptedException e) { e.printStackTrace(); }
+
 				}
+				System.out.println("Dodano Event(" 
+						+ timestamp[i] + ", " 
+						+ loglevel[i] + ", " 
+						+ details[i]); 
 		    }
 		}
 		System.out.println("Odczytano plik!");
