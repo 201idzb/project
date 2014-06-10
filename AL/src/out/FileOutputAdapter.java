@@ -6,11 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import logmanager.Configuration;
 import logmanager.Event;
+import logmanager.Event.LogLevel;
 /**
  * wyjsciowy adapter zapisu do pliku.
  * @author Mateusz Ratajczyk
@@ -22,13 +28,44 @@ public class FileOutputAdapter extends Thread implements OutputAdapter {
     /**  Zmienna do obslugi zapisywania danych do pliku.  */
     private Writer out;
     /**  Zmienna do przechowywania linii z loga.  */
-    private String tosave = "";
-
+    private String jsonRepresentation = "";
+    
+    /**  Obiekt do przechowywania szablonu zapisu do JSON.  */
+    private SomeObject someObject;
+    
     /**  Konstruktor wypisujacy utworzenie adaptera.  */
     public FileOutputAdapter() {
         System.out.println("Utworzono Adapter Wyjsciowy");
     }
+    
+    /** prywatna klasa, ktora posiada osobny konstruktor
+     * inicjalizujacy zmienne Timestamp, Loglevel, Details.
+     */
+    private class SomeObject {
+    	  /**  Zmienna do przechowywania Timestamp`a.  */
+    	  @SuppressWarnings("unused")
+		  private final Timestamp timestamp;
+    	  /**  Zmienna do przechowywania Loglevel`a.  */
+    	  @SuppressWarnings("unused")
+		  private final LogLevel loglevel;
+    	  /**  Zmienna do przechowywania Details`a.  */
+    	  @SuppressWarnings("unused")
+		  private final String details;
 
+    	  /** konstruktor do tworzenia szablonu
+    	   *  wykorzystywanego do zapisu do formatu JSON.
+    	   *  @param a Timestamp
+    	   *  @param b logLevel
+    	   *  @param c String
+    	   */
+    	  public SomeObject(final Timestamp a, 
+    			  final LogLevel b, final String c) {
+    	    this.timestamp = a;
+    	    this.loglevel = b;
+    	    this.details = c;
+    	  }
+    	}
+    
     /**
      * Metoda sluzaca do polaczenia z obiektem
      * konfiguracji za pomoca referencji z rdzenia aplikacji.
@@ -74,30 +111,39 @@ public class FileOutputAdapter extends Thread implements OutputAdapter {
      */
     public final boolean storeEvents(final List<Event> batch) {
         //System.out.println("FileOutputAdapter - Przechwycono zdarzenia.");
+        Gson gson = new GsonBuilder().setFieldNamingPolicy(
+        		FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+        String tmpString = "";
+
         for (@SuppressWarnings("rawtypes") Iterator iterator = batch.iterator();
         iterator.hasNext();) {
-            Event event = (Event) iterator.next();
-
-            //dopisywanie zdarzen do string`a + na koncu linii znak [Enter]
-            tosave = tosave + "{Timestamp: \"" + event.getTimestamp()
-                    + "\", Loglevel: \"" + event.getLoglevel()
-                    + "\", Details: \"" + event.getDetails()
-                    + "\"}" + System.getProperty("line.separator");
-        }
-        try {
-            //System.out.println("Zapisuje do pliku...");
-            out = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream(config.getLocOutput())));
-            out.write(tosave);
-            out.flush();
-            out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+            Event event = (Event) iterator.next();          
+            
+            someObject = new SomeObject(
+            		event.getTimestamp(),
+            		event.getLoglevel(),
+            		event.getDetails());
+            
+            tmpString = gson.toJson(someObject);
+            
+            jsonRepresentation = jsonRepresentation
+            		+ tmpString
+            		+ System.getProperty("line.separator");
+            
+            try {
+            	out = new BufferedWriter(new OutputStreamWriter(
+            			new FileOutputStream(config.getLocOutput())));
+            	out.write(jsonRepresentation);
+            	out.flush();
+            	out.close();
+        	
+            } catch (FileNotFoundException e) {
+            	e.printStackTrace();
+            } catch (IOException e) {
+            	e.printStackTrace();
+            }
         //System.out.println("Zapisano do pliku!");
+        }
         return true; //jesli ok
     }
 }
