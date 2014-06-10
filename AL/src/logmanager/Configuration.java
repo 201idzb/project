@@ -11,59 +11,57 @@ import java.io.IOException;
  * @author Kajetan Hryñczuk
  */
 public class Configuration {
-    /**  Wejsciowy adapter.  */
+    /** Wejsciowy adapter. */
     private static String inputAdapter;
-    /**  Wyjsciowy adapter.  */
+    /** Wyjsciowy adapter. */
     private static String outputAdapter;
-    /**  PLiki odczytu i zapisu .  */
+    /** PLiki odczytu i zapisu . */
     private static String locInput, locOutput;
-    /**  Maksymlana ilosc przechowywanych logow w programie.  */
+    /** Maksymlana ilosc przechowywanych logow w programie. */
     private static long maxDBSize;
-    /**  Rozmiar paczki logow.  */
+    /** Rozmiar paczki logow. */
     private static long batchSize;
-    /**  Konfiguracja bazy danych.  */
-    private static String port, dbName, dbHost, dbUserName, dbPassword,
-            dbTableName;
+    /** Konfiguracja bazy danych. */
+    private static String socketPort, dbPort, dbName, dbHost, dbUserName,
+            dbPassword, dbTableName;
 
-    /**  podzielnik pliku konfiguracyjnego.  */
+    /** podzielnik pliku konfiguracyjnego. */
     private static final String DELIMITER = ":";
 
     /**
      * Metoda oczyszczaja linie z komentarza.
-     * @param tmpLineArg String zawierajacy linie z pliku konfiguracyjnego
+     * @param tmpLineArg
+     *            String zawierajacy linie z pliku konfiguracyjnego
      * @return parametr oczyszczony z komentarza
      */
     private String getValFromLine(final String tmpLineArg) {
-        String  tmpLine = tmpLineArg;
+        String tmpLine = tmpLineArg;
         if (tmpLine != null) {
             if (tmpLine.contains(DELIMITER)) {
-                tmpLine = tmpLine.substring(
-                        tmpLine.indexOf(DELIMITER) + 1);
+                tmpLine = tmpLine.substring(tmpLine.indexOf(DELIMITER) + 1);
             }
             return tmpLine;
         } else {
-            throw new RuntimeException(
-                    "Plik konfiguracyjny "
+            throw new RuntimeException("Plik konfiguracyjny "
                     + "zawiera niepelne dane");
         }
     }
 
     /**
      * Metoda oczyszczaja linie z komentarza.
-     * @param tmpLineArg String zawierajacy linie z pliku konfiguracyjnego
+     * @param tmpLineArg
+     *            String zawierajacy linie z pliku konfiguracyjnego
      * @return parametr oczyszczony z komentarza
      */
     private Integer getValFromLineInInt(final String tmpLineArg) {
-        String  tmpLine = tmpLineArg;
+        String tmpLine = tmpLineArg;
         if (tmpLine != null) {
             if (tmpLine.contains(DELIMITER)) {
-                tmpLine = tmpLine.substring(
-                        tmpLine.indexOf(DELIMITER) + 1);
+                tmpLine = tmpLine.substring(tmpLine.indexOf(DELIMITER) + 1);
             }
             return Integer.parseInt(tmpLine);
         } else {
-            throw new RuntimeException(
-                    "Plik konfiguracyjny zawiera "
+            throw new RuntimeException("Plik konfiguracyjny zawiera "
                     + "niepelne dane");
         }
     }
@@ -76,23 +74,21 @@ public class Configuration {
 
             // tworzy plik konfiguracyjny conf.dat
             FileReader confHandle = new FileReader("conf.dat");
-            BufferedReader bufferReader =
-                    new BufferedReader(confHandle);
+            BufferedReader bufferReader = new BufferedReader(confHandle);
 
             inputAdapter = getValFromLine(bufferReader.readLine());
             outputAdapter = getValFromLine(bufferReader.readLine());
-            maxDBSize = getValFromLineInInt(
-                    bufferReader.readLine());
-            batchSize = getValFromLineInInt(
-                    bufferReader.readLine());
+            maxDBSize = getValFromLineInInt(bufferReader.readLine());
+            batchSize = getValFromLineInInt(bufferReader.readLine());
             locInput = getValFromLine(bufferReader.readLine());
             locOutput = getValFromLine(bufferReader.readLine());
-            port = getValFromLine(bufferReader.readLine());
+            dbPort = getValFromLine(bufferReader.readLine());
             dbName = getValFromLine(bufferReader.readLine());
             dbHost = getValFromLine(bufferReader.readLine());
             dbUserName = getValFromLine(bufferReader.readLine());
             dbPassword = getValFromLine(bufferReader.readLine());
             dbTableName = getValFromLine(bufferReader.readLine());
+            socketPort = getValFromLine(bufferReader.readLine());
 
             bufferReader.close();
         } catch (IOException ex) {
@@ -128,8 +124,8 @@ public class Configuration {
     }
 
     /**
-     * Metoda zwracaj¹ca rozmiar jednej paczki danych
-     * przesy³anej przez adaptery.
+     * Metoda zwracaj¹ca rozmiar jednej paczki danych przesy³anej przez
+     * adaptery.
      * @return zwraca rozmiar jednej paczki danych przesy³anej przez adaptery
      */
     public final long getBatchSize() {
@@ -156,8 +152,8 @@ public class Configuration {
      * Metoda Zwracaj¹ca port sql.
      * @return zwraca port sql
      */
-    public final String getPort() {
-        return port;
+    public final String getDBPort() {
+        return dbPort;
     }
 
     /**
@@ -194,9 +190,17 @@ public class Configuration {
 
     /**
      * Metoda Zwracaj¹ca tabele DB.
-     * @return zwraca tabele DB
+     *  * @return zwraca tabele DB
      */
     public final String getDBTableName() {
         return dbTableName;
+    }
+
+    /**
+     * Metoda Zwracaj¹ca port wejsciowego adaptera socket.
+     * @return zwraca port nasluchiwania
+     */
+    public final int getSocketPort() {
+        return Integer.parseInt(socketPort);
     }
 }
