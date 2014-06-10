@@ -1,5 +1,5 @@
 Adapter Wejsciowy :FileInputAdapter
-Adapter Wyjsciowy :FileOutputAdapter
+Adapter Wyjsciowy :DBOutputAdapter
 Max ilosc zbuforowanych logow :100000
 Rozmiar Batch :10
 Plik do odczytu logow :server.log.1
