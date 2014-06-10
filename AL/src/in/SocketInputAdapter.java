@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+
 import logmanager.Configuration;
 import logmanager.Event;
 import logmanager.QueueManager;
@@ -26,12 +28,19 @@ public class SocketInputAdapter extends Thread implements InputAdapter {
     /**  Obiekt do klasy QueueManager.  */
     private QueueManager queue;
 
-    /**  Konstruktor wypisujacy utworzenie adaptera.  */
-    public SocketInputAdapter() {
-        System.out.println("SocketInputAdapter aktywny , "
-                + "Port: " + config.getSocketPort());
-    }
 
+    /**
+     * Klasa LOG przechowuje obiekt logu.
+     */
+public class LOG {
+    /**  Zmienna do przechowywania kolumny timestamp (czas zdarzenia). */
+     private Timestamp timestamp;
+    /**  Zmienna do przechowywania kolumny loglevel (typ zdarzenia).  */
+     private String loglevel;
+    /**  Zmienna do przechowywania kolumny details (opis zdarzenia).  */
+     private String details;
+
+}
     /**
      * Metoda sluzaca do polaczenia z obiektem
      * konfiguracji za pomoca referencji z rdzenia aplikacji.
@@ -86,28 +95,48 @@ public class SocketInputAdapter extends Thread implements InputAdapter {
         return dat;
     }
 
-    /**  Format czasu zdarzenia.  */
-    private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
     /**  Zmienna do przechowywania linii z loga.  */
     private String data = null;
-    /**  Zmienna do przechowywania kolumny timestamp (czas zdarzenia). */
-    private Timestamp[] timestamp = null;
-    /**  Zmienna do przechowywania kolumny loglevel (typ zdarzenia).  */
-    private String[] loglevel = null;
-    /**  Zmienna do przechowywania kolumny details (opis zdarzenia).  */
-    private String[] details = null;
-    /**  Zmienna do przechowywania kolejnych spacji w linii z loga.  */
-    private String[] parts;
+
     /**  Zmienna do przechowywania ilosci iteracji w petli.  */
     private int iterations = 0;
-    /**  Czas zdarzenia wykorzystywany do rzutowania.  */
-    private Date date;
+
+    /**
+     * metoda obslugi watku.
+     * @param s linia tekstu
+     * @return zwraca czas w formie timestamp
+     * @throws ParseException wyjatek parsowania blednej lini
+     */
+    public final LOG parseLOG(final String s) throws ParseException {
+       LOG lg = new LOG();
+       /**  Format czasu zdarzenia.  */
+       DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+       String[] parts = s.split(" ");
+        Date date;
+        date = (Date) df.parse((s.substring(1,
+                   0 + parts[0].length() - 1)));
+
+       lg.timestamp = new Timestamp(date.getTime());
+
+       lg.loglevel = s.substring(parts[0].length() + 1,
+               parts[0].length() + 1 + parts[1].length());
+
+       lg.details = s.substring(parts[0].length()
+               + parts[1].length() + 1 + 1 + 1
+               , s.length());
+
+       return lg;
+    }
 
     /**
      * metoda obslugi watku.
      */
     public final void run() {
-
+        System.out.println("SocketInputAdapter aktywny");
+        System.out.println("Nasluchuje na porcie :"
+               + Integer.toString(config.getSocketPort()));
+        LOG[] log = new LOG[(int) config.getBatchSize()];
         final int timeToSleep = 500;
         int portNumber = config.getSocketPort();
         while (true) {
@@ -124,46 +153,28 @@ public class SocketInputAdapter extends Thread implements InputAdapter {
 
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println(inputLine);
-                    timestamp = new Timestamp[(int) config.getBatchSize()];
-                    loglevel = new String[(int) config.getBatchSize()];
-                    details = new String[(int) config.getBatchSize()];
+
 
                     for (int i = 0; i < config.getBatchSize(); ++i) {
                         // jezeli nie ma nastepnej linii to konczy
 
                         data = inputLine;
-                        parts = data.split(" "); // wyszukiwanie spacji
 
                         // jesli nie jest to pusta linia
                         if (!(data.equals(""))) {
+                           log[i] = parseLOG(data);
 
-                            try {
-                                date = (Date) df.parse((data.substring(1,
-                                        0 + parts[0].length() - 1)));
-                            } catch (ParseException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-
-                            timestamp[i] = new Timestamp(date.getTime());
-
-                            loglevel[i] = data.substring(parts[0].length() + 1,
-                                    parts[0].length() + 1 + parts[1].length());
-
-                            details[i] = data.substring(parts[0].length()
-                                    + parts[1].length() + 1 + 1 + 1
-                                    , data.length());
                         }
                     }
 
                     // tworzenie zdarzen
                     for (int i = 0; i < config.getBatchSize(); ++i) {
-                        if (timestamp[i] == null) {
+                        if (log[i] == null) {
                             break;
                         }
 
-                        Event a = new Event(timestamp[i], loglevel[i],
-                                details[i]);
+                        Event a = new Event(log[i].timestamp, log[i].loglevel,
+                                log[i].details);
 
 
                         while (!queue.acceptEvent(a)) {
@@ -184,6 +195,9 @@ public class SocketInputAdapter extends Thread implements InputAdapter {
 
                 System.out.println(e.getMessage());
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+            System.out.println("nie poprawne dane wejsciowe");
                 e.printStackTrace();
             }
         }
