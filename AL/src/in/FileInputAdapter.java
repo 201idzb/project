@@ -13,21 +13,20 @@ import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
 
-/** 
+/**
  * wejsciowy adapter zapisu do pliku.
  * @author Mateusz Ratajczyk
- * 
 */
 
 public class FileInputAdapter extends Thread implements InputAdapter {
-	/**  Obiekt do klasy Configuration.  */
-	private Configuration config;
-	/**  Obiekt do klasy QueueManager.  */
-	private QueueManager queue;
-	/**  Tymczasowa zmienna do parsowania String`a na Timestamp.  */
-	private Timestamp tmpTime;
+    /**  Obiekt do klasy Configuration.  */
+    private Configuration config;
+    /**  Obiekt do klasy QueueManager.  */
+    private QueueManager queue;
+    /**  Tymczasowa zmienna do parsowania String`a na Timestamp.  */
+    private Timestamp tmpTime;
 
-	/**  Zmienna do przechowywania linii z loga.  */
+    /**  Zmienna do przechowywania linii z loga.  */
     private String data = "";
     /**  Zmienna do przechowywania kolumny timestamp (czas zdarzenia). */
     private String[] timestamp = null;
@@ -38,7 +37,7 @@ public class FileInputAdapter extends Thread implements InputAdapter {
     /**  Zmienna do przechowywania kolejnych spacji w linii z loga.  */
     private String[] parts;
     /**  Zmienna do obslugi zczytywania danych z pliku.  */
-	private Scanner scanner;
+    private Scanner scanner;
     /**  Format czasu zdarzenia.  */
     private DateFormat df = new SimpleDateFormat(
             "yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -46,107 +45,107 @@ public class FileInputAdapter extends Thread implements InputAdapter {
     private Date date;
     /**  Zmienna do przechowywania czasu uspienia (w ms).  */
     private final int timeToSleep = 1000;
-	
-	/**  Konstruktor wypisujacy utworzenie adaptera.  */
-	public FileInputAdapter() {		
-		System.out.println("Utworzono Adapter Wejsciowy"); 
-	}
-	
-	/**
+
+    /**  Konstruktor wypisujacy utworzenie adaptera.  */
+    public FileInputAdapter() {
+        System.out.println("Utworzono Adapter Wejsciowy");
+    }
+
+    /**
      * Metoda sluzaca do polaczenia z obiektem
      * konfiguracji za pomoca referencji z rdzenia aplikacji.
      * @param cnfg obiekt zawierajacy konfiguracje
      */
-	public final void setupConfig(final Configuration cnfg) { 
-		this.config = cnfg;
-	}
-	
+    public final void setupConfig(final Configuration cnfg) {
+        this.config = cnfg;
+    }
+
     /**
      * Metoda sluzaca do polaczenia z obiektem
      * kolejki za pomoca referencji z rdzenia aplikacji.
      * @param que referencja do kolejki
      */
-	public final void connectToQueueManager(final QueueManager que) { 
-		this.queue = que;
-	}
-	
-	 /**
+    public final void connectToQueueManager(final QueueManager que) {
+        this.queue = que;
+    }
+
+    /**
      * funkcja wywolania.
      */
     public final void exec() { start(); }
-    
-	 /**
+
+    /**
      * do obslugi funkcji testowej.
      * @param tmp test
      * @return null
      */
-	@Override
-	public final String test(final String tmp) { return null; }
-	
-	 /**
+     @Override
+     public final String test(final String tmp) { return null; }
+
+     /**
      * metoda obslugi watku.
      */
-    public final void run() {
-    	try {
-			scanner = new Scanner(new File(config.getLocInput()));
-			System.out.println("Odczytano sciezke do pliku!");
-		} catch (FileNotFoundException e) {
-			System.out.println("Blad odczytu pliku!");
-		}
-    	
-    	//dopoki jest nastepna linia
-		while (scanner.hasNextLine()) {
-		    timestamp = new String[(int) config.getBatchSize()];
-		    loglevel = new String[(int) config.getBatchSize()];
-		    details = new String[(int) config.getBatchSize()];
-			
-		    for (int i = 0; i < config.getBatchSize(); ++i) {	
-		    	//jezeli nie ma nastepnej linii to konczy
-		    	if (!scanner.hasNextLine()) { break; } 
-				data = scanner.nextLine();
-				parts = data.split(" "); //wyszukiwanie spacji
-				
-				//jesli nie jest to pusta linia
-				if (!(data.equals(""))) { 
-					timestamp[i] = data.substring(1, 0 + parts[0].length() - 1);
-					
-					loglevel[i] = data.substring(parts[0].length() + 1,
-							parts[0].length() + 1 + parts[1].length());
-					
-					details[i] = data.substring(parts[0].length() 
-							+ parts[1].length() + 1 + 1 + 1,
-							data.length());
-				}
-			}
-		    
-		    //tworzenie zdarzen
-		    for (int i = 0; i < config.getBatchSize(); ++i) {
-		    	if (timestamp[i] == null) { break; }
-		    	
-		        try {
-		            date = (Date) df.parse(timestamp[i]);
-		        } catch (ParseException e) { e.printStackTrace(); }
-		        tmpTime = new Timestamp(date.getTime());
-		    	
-				Event a = new Event(tmpTime, loglevel[i], details[i]);
-				
-				while (!queue.acceptEvent(a)) {
-					System.out.println("Nie udalo sie dodac Eventu("
-							+ timestamp[i] 
-							+ ", " + loglevel[i] 
-							+ ", " + details[i]); 
-					System.out.println("Ponawiam...");
-					try { Thread.sleep(timeToSleep);
-					}  catch (InterruptedException e) { e.printStackTrace(); }
+     public final void run() {
+        try {
+         scanner = new Scanner(new File(config.getLocInput()));
+         System.out.println("Odczytano sciezke do pliku!");
+      } catch (FileNotFoundException e) {
+         System.out.println("Blad odczytu pliku!");
+      }
 
-				}
-				System.out.println("Dodano Event(" 
-						+ timestamp[i] + ", " 
-						+ loglevel[i] + ", " 
-						+ details[i]); 
-		    }
-		}
-		System.out.println("Odczytano plik!");
-		scanner.close();
+       //dopoki jest nastepna linia
+      while (scanner.hasNextLine()) {
+          timestamp = new String[(int) config.getBatchSize()];
+          loglevel = new String[(int) config.getBatchSize()];
+          details = new String[(int) config.getBatchSize()];
+
+          for (int i = 0; i < config.getBatchSize(); ++i) {
+             //jezeli nie ma nastepnej linii to konczy
+             if (!scanner.hasNextLine()) { break; }
+            data = scanner.nextLine();
+            parts = data.split(" "); //wyszukiwanie spacji
+
+            //jesli nie jest to pusta linia
+            if (!(data.equals(""))) {
+               timestamp[i] = data.substring(1, 0 + parts[0].length() - 1);
+
+               loglevel[i] = data.substring(parts[0].length() + 1,
+                     parts[0].length() + 1 + parts[1].length());
+
+               details[i] = data.substring(parts[0].length()
+                     + parts[1].length() + 1 + 1 + 1,
+                     data.length());
+            }
+         }
+
+          //tworzenie zdarzen
+          for (int i = 0; i < config.getBatchSize(); ++i) {
+             if (timestamp[i] == null) { break; }
+
+              try {
+                  date = (Date) df.parse(timestamp[i]);
+              } catch (ParseException e) { e.printStackTrace(); }
+              tmpTime = new Timestamp(date.getTime());
+
+            Event a = new Event(tmpTime, loglevel[i], details[i]);
+
+            while (!queue.acceptEvent(a)) {
+               System.out.println("Nie udalo sie dodac Eventu("
+                     + timestamp[i]
+                     + ", " + loglevel[i]
+                     + ", " + details[i]);
+               System.out.println("Ponawiam...");
+               try { Thread.sleep(timeToSleep);
+               }  catch (InterruptedException e) { e.printStackTrace(); }
+
+            }
+            System.out.println("Dodano Event("
+                  + timestamp[i] + ", "
+                  + loglevel[i] + ", "
+                  + details[i]);
+          }
+      }
+      System.out.println("Odczytano plik!");
+      scanner.close();
     }
 }
