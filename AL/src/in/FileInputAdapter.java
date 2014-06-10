@@ -14,7 +14,7 @@ import logmanager.QueueManager;
 import logmanager.Event;
 
 /**
- * wejsciowy adapter zapisu do pliku.
+ * wejsciowy adapter pobierajacy dane z pliku.
  * @author Mateusz Ratajczyk
 */
 
