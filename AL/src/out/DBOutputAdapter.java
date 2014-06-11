@@ -2,9 +2,12 @@ package out;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
+
+import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 
 import logmanager.Configuration;
 import logmanager.Event;
@@ -77,7 +80,7 @@ public class DBOutputAdapter extends Thread implements OutputAdapter {
                 + ":" + config.getDBPort()
                 + "/" + config.getDBName(),
                 config.getDBUserName(), config.getDBPassword());
-
+        
         //System.out.println("przechwycono eventy");
         for (@SuppressWarnings("rawtypes")
         Iterator iterator = batch.iterator();
@@ -86,7 +89,9 @@ public class DBOutputAdapter extends Thread implements OutputAdapter {
 
             //insert do bazy
             Statement st = conn.createStatement();
-            st.executeUpdate("INSERT into logs VALUES(NULL, \""
+            st.executeUpdate("INSERT into " 
+            		+ config.getDBTableName() 
+            		+ " VALUES(NULL, \""
                     + event.getTimestamp()
                     + "\", \""
                     + event.getLoglevel()
@@ -94,14 +99,25 @@ public class DBOutputAdapter extends Thread implements OutputAdapter {
                     + event.getDetails()
                     + "\")");
 
-            //System.out.println(event);
+
         }
         //disconnect z bazy
 
         conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException SQLe) {
+            System.out.println("SQL Exception");
+            //SQLe.printStackTrace();
         }
+        catch (ClassNotFoundException CNFe) {
+        	System.out.println("Nie znalazlem klasy");
+        }
+        catch (IllegalAccessException IAe) {
+        	System.out.println("Nie mialem dostepu do metody");
+        }
+        catch (InstantiationException Ie) {
+        	System.out.println("Nie moglem utworzyc obiektu klasy");
+        }
+
         return true; //jesli ok
     }
 }
