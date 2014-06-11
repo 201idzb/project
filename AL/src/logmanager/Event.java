@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import testandexceptions.InvalidEventException;
+
 /**
  * Klasa umo¿liwiajaca utworzenie objektu jaki u¿ywany
  * jest do przechowywania eventów.
@@ -76,15 +78,28 @@ public class Event {
      * @param timestampTmp data zajœcia zdarzenia podana w formie timestamp
      * @param logLevelTmp typ zdarzenia
      * @param detailsTmp informacje o zdarzeniu
+     * @throws InvalidEventException bledne dane
      */
     public Event(final Timestamp timestampTmp, final String logLevelTmp,
-            final String detailsTmp) {
+            final String detailsTmp) throws InvalidEventException {
+        if (timestampTmp == null) {
+            throw new
+            InvalidEventException("PROBOWANO DODAC PUSTY EVENT");
+        }
+        if (logLevelTmp == null) {
+            throw new
+            InvalidEventException("PROBOWANO DODAC PUSTY EVENT");
+        }
+        if (detailsTmp == null) {
+            throw new
+            InvalidEventException("PROBOWANO DODAC PUSTY EVENT");
+        }
+
         this.timestamp = timestampTmp;
         this.details = detailsTmp;
         try {
             this.logLevel = LogLevel.valueOf(logLevelTmp);
         } catch (IllegalArgumentException e) {
-            //e.printStackTrace();
             System.out.println("Nadano wartosc WARNING dla "
                     + "LogLevel w zdarzeniu z "
                     + "blednym LogLevel!");
