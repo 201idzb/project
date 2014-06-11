@@ -5,12 +5,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import testandexceptions.InvalidEventException;
+
 /**
  * klasa QueueManager implementuje strukturê kolejki.
  * pozwalaj¹c na kolejkowanie zdarzeñ w trybie FIFO.
  * @author Kajetan Hryñczuk
  *
  */
+
 
 public class QueueManager {
 /**  lista zdarzen.  */
@@ -54,8 +57,14 @@ return tmp;
  * pobieranie eventow.
  * @param event zdarzenie przesy³ane do kolejki
  * @return true jeœli kolejka przyjmnie zdarzenie, a false jeœli nie przyjmnie
+ * @throws InvalidEventException jesli zdarzenie jest bledne
  */
-public final boolean acceptEvent(final Event event) {
+public final boolean acceptEvent(final Event event)
+        throws InvalidEventException {
+if (event == null) {
+    throw new
+    InvalidEventException("PROBOWANO DODAC PUSTY EVENT");
+}
 if (actSize < maxSize) {
 eventManager(true, event);
 ++actSize;
@@ -76,7 +85,12 @@ Event tmp = eventManager(false, null);
 return tmp;
 } else {
 Timestamp tmpTime = new Timestamp(0);
-Event event = new Event(tmpTime, "pobrano pusty log", null);
+Event event = null;
+try {
+    event = new Event(tmpTime, "pobrano pusty log", "details");
+} catch (InvalidEventException e) {
+    e.printStackTrace();
+}
 return event;
 }
 }
