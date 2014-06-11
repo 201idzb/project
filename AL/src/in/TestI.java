@@ -2,6 +2,7 @@ package in;
 
 import java.sql.Timestamp;
 
+import testandexceptions.InvalidEventException;
 import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
@@ -56,13 +57,24 @@ this.queue = queueTmp;
      * funkcja uruchamiajaca.
      */
     public final void run() {
+        final long q = 500000;
     //for (int i = 0; i < 110000; i++) {
     while (true) {
-    Timestamp x = new Timestamp(500000);
-    Event a = new Event(x, "WARNING", "details");
-    System.out.println((queue.acceptEvent(a))
-    ? "Dodano Event"
-    : "Nie udalo sie dodac Eventu");
+    Timestamp x = new Timestamp(q);
+    Event a = null;
+    try {
+        a = new Event(x, "WARNING", "details");
+    } catch (InvalidEventException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+    }
+    try {
+        System.out.println((queue.acceptEvent(a))
+        ? "Dodano Event"
+        : "Nie udalo sie dodac Eventu");
+    } catch (InvalidEventException e) {
+        e.printStackTrace();
+    }
     try {
     Thread.sleep(1);
     } catch (InterruptedException ex) {
