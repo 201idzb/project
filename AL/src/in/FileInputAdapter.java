@@ -82,24 +82,27 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 		final int timeToSleep = 1000;
 
 		for (int i = 0; i < config.getBatchSize(); ++i) {
-			if (timestamp[i] == null) { break; }
+			if (timestamp[i] != null) {
+				Event a = new Event(timestamp[i], loglevel[i], details[i]);
 
-			Event a = new Event(timestamp[i], loglevel[i], details[i]);
-
-			while (!queue.acceptEvent(a)) {
-				System.out.println("Nie udalo sie dodac Eventu("
-				+ timestamp[i]
-				+ ", " + loglevel[i]
-				+ ", " + details[i]);
-				System.out.println("Ponawiam...");
-				try { Thread.sleep(timeToSleep);
-				}  catch (InterruptedException e) { e.printStackTrace(); }
+				while (!queue.acceptEvent(a)) {
+					System.out.println("Nie udalo sie dodac Eventu("
+					+ timestamp[i]
+					+ ", " + loglevel[i]
+					+ ", " + details[i]);
+					System.out.println("Ponawiam...");
+					try { 
+						Thread.sleep(timeToSleep);
+					} catch (InterruptedException e) { 
+						e.printStackTrace();
+					}
+				}
+				System.out.println("Dodano Event("
+				+ timestamp[i] + ", "
+				+ loglevel[i] + ", "
+				+ details[i]);
 			}
-			System.out.println("Dodano Event("
-			+ timestamp[i] + ", "
-			+ loglevel[i] + ", "
-			+ details[i]);
-		}
+		}	
 	}
 
 	/** 
@@ -140,6 +143,7 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 		} catch (FileNotFoundException e) {
 			System.out.println("Blad odczytu pliku!");
 		}
+
 		//dopoki jest nastepna linia
 		while (scanner.hasNextLine()) {
 			timestamp = new Timestamp[(int) config.getBatchSize()];
@@ -150,11 +154,10 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 				//jezeli nie ma nastepnej linii to konczy
 				if (!scanner.hasNextLine()) { break; }
 				data = scanner.nextLine();
-				parts = data.split(" "); //wyszukiwanie spacji
 
 				//jesli nie jest to pusta linia
 				if (!(data.equals(""))) {
-					//ustawianie wartosci Timestamp, Loglevel oraz details
+					parts = data.split(" "); //wyszukiwanie spacji
 					setValues(i);
 				}
 			}
