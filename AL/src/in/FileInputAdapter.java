@@ -24,8 +24,6 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	/**  Obiekt do klasy QueueManager.  */
 	private QueueManager queue;
 
-	/**  Zmienna do przechowywania linii z loga.  */
-	private String data = "";
 	/**  Zmienna do przechowywania kolumny timestamp (czas zdarzenia). */
 	private Timestamp[] timestamp = null;
 	/**  Zmienna do przechowywania kolumny loglevel (typ zdarzenia).  */
@@ -34,15 +32,10 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	private String[] details = null;
 	/**  Zmienna do przechowywania kolejnych spacji w linii z loga.  */
 	private String[] parts;
-	/**  Zmienna do obslugi zczytywania danych z pliku.  */
-	private Scanner scanner;
-	/**  Format czasu zdarzenia.  */
-	private DateFormat df = new SimpleDateFormat(
-		"yyyy-MM-dd'T'HH:mm:ss.SSS");
+	/**  Zmienna do przechowywania linii z loga.  */
+	private String data = "";
 	/**  Czas zdarzenia wykorzystywany do rzutowania.  */
 	private Date date;
-	/**  Zmienna do przechowywania czasu uspienia (w ms).  */
-	private final int timeToSleep = 1000;
 
 	/**  Konstruktor wypisujacy utworzenie adaptera.  */
 	public FileInputAdapter() {
@@ -84,6 +77,9 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	* metoda sluzaca do tworzenia zdarzen.
 	*/
 	public final void createEvents() {
+		/**  Zmienna do przechowywania czasu uspienia (w ms).  */
+		final int timeToSleep = 1000;
+
 		for (int i = 0; i < config.getBatchSize(); ++i) {
 			if (timestamp[i] == null) { break; }
 
@@ -111,13 +107,16 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	* @param i index
 	*/
 	public final void setValues(final int i) {
+		/**  Format czasu zdarzenia.  */
+		DateFormat df = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS");
+
 		try {
 			date = (Date) df.parse((data.substring(1,
-			0 + parts[0].length() - 1)));
+					0 + parts[0].length() - 1)));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 		timestamp[i] = new Timestamp(date.getTime());
 
 		loglevel[i] = data.substring(parts[0].length() + 1,
@@ -132,6 +131,8 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	* metoda obslugi watku.
 	*/
 	public final void run() {
+		/**  Zmienna do obslugi zczytywania danych z pliku.  */
+		Scanner scanner = null;
 		try {
 			scanner = new Scanner(new File(config.getLocInput()));
 			System.out.println("Odczytano sciezke do pliku!");
