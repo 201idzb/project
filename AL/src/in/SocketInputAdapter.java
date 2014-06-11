@@ -3,7 +3,6 @@ package in;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Timestamp;
@@ -11,6 +10,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+
+
+
 
 
 
@@ -59,14 +62,7 @@ public class LOG {
         this.queue = que;
     }
 
-    /**
-     * do obslugi funkcji testowej.
-     * @param tmp test
-     * @return null
-     */
-    public final String test(final String tmp) {
-        return tmp;
-    }
+
 
     /**
      * funkcja wywolania.
@@ -75,37 +71,21 @@ public class LOG {
         start();
     }
 
+
     /**
-     * metoda liczaca iteracje w petli.
-     * @param ind index
-     * @return iterations
+     * testowa metoda.
+     * @param tmp paramter tekstu
+     * @return null nic
      */
-    public final int setIterations(final int ind) {
-        this.iterations = ind;
-        return iterations;
+    public final String test(final String tmp) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     /**
-     * metoda ustawiajaca Stringa data.
-     * @param dat data
-     * @return dat
-     */
-    public final String setData(final String dat) {
-        this.data = dat;
-        return dat;
-    }
-
-
-    /**  Zmienna do przechowywania linii z loga.  */
-    private String data = null;
-
-    /**  Zmienna do przechowywania ilosci iteracji w petli.  */
-    private int iterations = 0;
-
-    /**
-     * metoda obslugi watku.
+     * metoda parsowania logu.
      * @param s linia tekstu
-     * @return zwraca czas w formie timestamp
+     * @return zwraca obiekt log
      * @throws ParseException wyjatek parsowania blednej lini
      */
     public final LOG parseLOG(final String s) throws ParseException {
@@ -132,74 +112,63 @@ public class LOG {
     /**
      * metoda obslugi watku.
      */
+    @SuppressWarnings("resource")
     public final void run() {
         System.out.println("SocketInputAdapter aktywny");
         System.out.println("Nasluchuje na porcie :"
                + Integer.toString(config.getSocketPort()));
-        LOG[] log = new LOG[(int) config.getBatchSize()];
-        final int timeToSleep = 500;
-        int portNumber = config.getSocketPort();
+        LOG log = new LOG();
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(config.getSocketPort());
+
+        } catch (IOException e1) {
+            System.out.println("port : "
+       + Integer.toString(config.getSocketPort())
+        + " jest w uzyciu");
+            System.exit(1);
+
+        }
+
         while (true) {
 
-            try (ServerSocket serverSocket = new ServerSocket(portNumber);
+            try {
 
                     Socket clientSocket = serverSocket.accept();
-                    PrintWriter out = new PrintWriter(
-                            clientSocket.getOutputStream(), true);
                     BufferedReader in = new BufferedReader(
                         new InputStreamReader(
-                          clientSocket.getInputStream()));) {
-                   String inputLine;
+                          clientSocket.getInputStream()));
+                    String inputLine;
 
-                while ((inputLine = in.readLine()) != null) {
-                    System.out.println(inputLine);
+                    while ((inputLine = in.readLine()) != null) {
+                        System.out.println(inputLine);
 
 
-                    for (int i = 0; i < config.getBatchSize(); ++i) {
-                        // jezeli nie ma nastepnej linii to konczy
+                            // jesli nie jest to pusta linia
+                            if (!(inputLine.equals(""))) {
+                               log = parseLOG(inputLine);
 
-                        data = inputLine;
+                            }
 
-                        // jesli nie jest to pusta linia
-                        if (!(data.equals(""))) {
-                           log[i] = parseLOG(data);
 
-                        }
+                            Event a = new Event(log.timestamp,
+                                    log.loglevel,
+                                    log.details);
+
+                            while (!queue.acceptEvent(a)) {
+                                System.out.println("nie dodalo " + inputLine);
+                            }
+                            System.out.println("dodalo " + inputLine);
                     }
 
-                    // tworzenie zdarzen
-                    for (int i = 0; i < config.getBatchSize(); ++i) {
-                        if (log[i] == null) {
-                            break;
-                        }
-
-                        Event a = new Event(log[i].timestamp, log[i].loglevel,
-                                log[i].details);
-
-
-                        while (!queue.acceptEvent(a)) {
-                            sleep(timeToSleep);
-                            System.out.println("nie dodano ponawianie");
-                        }
-                        System.out.println("dodano");
-
-                    }
-                }
-                System.out.println("Odczytano plik!");
-
-            } catch (IOException e) {
-                System.out.println(
-                    "Exception caught when trying to listen on port "
-                    + portNumber
-                    + " or listening for a connection");
-
-                System.out.println(e.getMessage());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             } catch (ParseException e) {
-            System.out.println("nie poprawne dane wejsciowe");
-                e.printStackTrace();
+                System.out.println("niepoprawne dane wejsciowe");
+                System.exit(1);
+            } catch (IOException e) {
+                System.out.println("Koniec pliku /  "
+                        + "po³aczenie zerwane / Timeout");
             }
         }
     }
+
 }
