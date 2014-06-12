@@ -104,7 +104,11 @@ public class DBOutputAdapter extends Thread implements OutputAdapter {
         //disconnect z bazy
 
         conn.close();
-        } catch (SQLException SQLe) {
+        } catch (MySQLSyntaxErrorException mySQLSyntaxErre) {
+            System.out.println("SQL Syntax error");
+            //SQLe.printStackTrace();
+        }
+        catch (SQLException SQLe) {
             System.out.println("SQL Exception");
             //SQLe.printStackTrace();
         }
