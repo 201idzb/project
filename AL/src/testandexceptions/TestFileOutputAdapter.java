@@ -1,8 +1,5 @@
+
 package testandexceptions;
-
-import static org.junit.Assert.*;
-
-import org.junit.Test;
 
 
 /** klasa testujaca FileOutputAdapter.
@@ -10,12 +7,15 @@ import org.junit.Test;
 */
 public class TestFileOutputAdapter {
 	
-	/** metoda testujaca.
-	 * 
-	 */
-	@Test
-	public final void test() {
-		
-	}
-
+	// FileNotFoundException
+	//
+	// Blad ten wystapi gdy podczas tworzenia nowego pliku:
+	// out = new BufferedWriter(new OutputStreamWriter(
+	// new FileOutputStream(config.getLocOutput())));
+	//
+	// - nie bedzie miejsca na dysku
+	// - nie bedzie polaczenia z dyskiem
+	
+	// Test sprawdzenia czy zdarzenia zapisaly sie
+	// w formacie JSON zakonczony powodzeniem.
 }
