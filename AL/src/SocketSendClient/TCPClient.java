@@ -34,6 +34,7 @@ private TCPClient() {
         String hostName = "127.0.0.1";
       final  int portNumber = 2106;
       final int timeout = 1000;
+      final int threadSleep = 10;
         File file = new File(
                 "D:\\server.log.1"); // lokalizacja pliku z logiem do wyslania
         try {
@@ -51,6 +52,7 @@ private TCPClient() {
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);
+                Thread.sleep(threadSleep);
 System.out.println(userInput);
             }
 

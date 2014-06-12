@@ -115,7 +115,6 @@ public class LOG {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(config.getSocketPort());
-
         } catch (IOException e1) {
             System.out.println("port : "
        + Integer.toString(config.getSocketPort())
@@ -127,26 +126,20 @@ public class LOG {
         while (true) {
 
             try {
-
+                    Event a;
+                    String inputLine;
                     Socket clientSocket = serverSocket.accept();
                     BufferedReader in = new BufferedReader(
                         new InputStreamReader(
                           clientSocket.getInputStream()));
-                    String inputLine;
-
                     while ((inputLine = in.readLine()) != null) {
                         System.out.println(inputLine);
 
-
-                            // jesli nie jest to pusta linia
+                        try {
                             if (!(inputLine.equals(""))) {
-                               log = parseLOG(inputLine);
+                                log = parseLOG(inputLine);
 
                             }
-
-
-                            Event a;
-                            try {
                                 a = new Event(log.timestamp,
                                         log.loglevel,
                                         log.details);
@@ -156,17 +149,16 @@ public class LOG {
                                 }
                                 System.out.println("dodalo " + inputLine);
                             } catch (InvalidEventException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
+                              System.out.println("nie dodano eventu");
+                            } catch (ParseException e) {
+                               System.out.println("niepoprawne dane");
                             }
                     }
 
-            } catch (ParseException e) {
-                System.out.println("niepoprawne dane wejsciowe");
-                System.exit(1);
             } catch (IOException e) {
                 System.out.println("Koniec pliku /  "
                         + "po³aczenie zerwane / Timeout");
+                System.out.println(e);
             }
         }
     }
