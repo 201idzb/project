@@ -34,11 +34,9 @@ public class TestFileInputAdapter {
 	// zamiast 32 zdarzen (z 38 linii loga) dodalo jedynie 18.
 	// Zamieniono ta linijke na if (timestamp[i] != null) { ... }
 	// i metoda dodawala 32 zdarzenia z 38 linii loga 
-	// (poprawnie, 6 linio bylo pustych)
-	
-	
+	// (poprawnie, 6 linii bylo pustych)
 
-	
+
 	/** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne Timestamp.
 	 */
@@ -62,7 +60,7 @@ public class TestFileInputAdapter {
 		}
 		assertEquals("Wartosci sa rowne ", timestamp[0], getTimestamp());
 	}
-	
+
 	 /** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne loglevel.
 	 */
@@ -76,7 +74,7 @@ public class TestFileInputAdapter {
 		}
 		assertEquals("Wartosci sa rowne ", loglevel[0], getLogLevel());
 	}
-	
+
 	 /** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne details.
 	 */
@@ -92,7 +90,7 @@ public class TestFileInputAdapter {
 		assertEquals("Wartosci sa rowne ", details[0], getDetails());
 	}
 
-	
+
 	/** metoda zwracajaca 1 linijke z loga.
 	 * @return linijka z loga
 	 */
@@ -104,7 +102,7 @@ public class TestFileInputAdapter {
 				+ "Device.ManagementServer.ConnectionRequestUsername " 
 				+ " user==user";
 	}
-	
+
 	/** metoda zwracajaca sparsowany Timestamp.
 	 * @return Timestamp string
 	 */
@@ -122,14 +120,14 @@ public class TestFileInputAdapter {
 		Timestamp time = new Timestamp(tmpdata.getTime());
 		return time;
 	}
-	
+
 	/** metoda zwracajaca "INFO".
 	 * @return "INFO" string
 	 */
 	public final String getLogLevel() {
 		return "INFO";
 	}
-	
+
 	/** metoda zwracajaca kolumne details.
 	 * @return details string
 	 */
