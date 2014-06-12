@@ -1,4 +1,6 @@
-
+/**
+ * Pakiet logmanager
+ */
 package logmanager;
 
 import java.io.BufferedReader;

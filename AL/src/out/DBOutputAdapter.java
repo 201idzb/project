@@ -1,3 +1,6 @@
+/**
+ * Pakiet out
+ */
 package out;
 
 import java.sql.Connection;
