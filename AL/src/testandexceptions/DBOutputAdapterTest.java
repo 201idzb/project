@@ -8,15 +8,15 @@ public class DBOutputAdapterTest {
 
 	/*	 Testy akceptacyjne  - "czarnoskrzynkowe":
 	 * 
-	 *  Odlaczenie bazy danych podczas dzialania:
+	 *	Odlaczenie bazy danych podczas dzialania:
  	 *	Zlapany wyjatek SQL Exception
 	 *	Po ponownym podlaczeniu bazy danych program kontynuuje wpisywanie rekordow
 	 *
 	 *	Odlaczenie bazy danych przed uzyciem adaptera:
 	 *	Zlapany wyjatek SQL Exception
-	 *  Po ponownym podlaczeniu bazy danych program kontynuuje wpisywanie rekordow
+	 *	Po ponownym podlaczeniu bazy danych program kontynuuje wpisywanie rekordow
 	 *
-	 *  Podane zle haslo:
+	 *	Podane zle haslo:
 	 *	Zlapany wyjatek SQL Exception
 	 *
 	 *	Podany zly uzytkownik:
