@@ -1,3 +1,4 @@
+
 package testandexceptions;
 
 import static org.junit.Assert.*;
@@ -23,6 +24,20 @@ public class TestFileInputAdapter {
 	private String[] details = null;
 	/**  Zmienna do przechowywania kolejnych spacji w linii z loga.  */
 	private String[] parts;
+	
+	// Testy akceptacyjne  - "czarnoskrzynkowe":
+	
+	// Naprawiono metode createEvents()
+	// 
+	// Podczas testow znaleziono blad : if (timestamp[i] == null) { break; }
+	// Powodowalo to, ze nie wszystkie Zdarzenia byly dodawane,
+	// zamiast 32 zdarzen (z 38 linii loga) dodalo jedynie 18.
+	// Zamieniono ta linijke na if (timestamp[i] != null) { ... }
+	// i metoda dodawala 32 zdarzenia z 38 linii loga 
+	// (poprawnie, 6 linio bylo pustych)
+	
+	
+
 	
 	/** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne Timestamp.
