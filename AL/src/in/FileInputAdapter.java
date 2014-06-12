@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import testandexceptions.InvalidEventException;
 import logmanager.Configuration;
 import logmanager.QueueManager;
 import logmanager.Event;
@@ -50,6 +51,7 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 	*/
 	public final void setupConfig(final Configuration cnfg) {
 		this.config = cnfg;
+		
 	}
 
 	/**
@@ -83,20 +85,25 @@ public class FileInputAdapter extends Thread implements InputAdapter {
 
 		for (int i = 0; i < config.getBatchSize(); ++i) {
 			if (timestamp[i] != null) {
-				Event a = new Event(timestamp[i], loglevel[i], details[i]);
-
-				while (!queue.acceptEvent(a)) {
-					System.out.println("Nie udalo sie dodac Eventu("
-					+ timestamp[i]
-					+ ", " + loglevel[i]
-					+ ", " + details[i]);
-					System.out.println("Ponawiam...");
-					try { 
-						Thread.sleep(timeToSleep);
-					} catch (InterruptedException e) { 
-						e.printStackTrace();
+				Event a;
+				try {
+					a = new Event(timestamp[i], loglevel[i], details[i]);
+					while (!queue.acceptEvent(a)) {
+						System.out.println("Nie udalo sie dodac Eventu("
+						+ timestamp[i]
+						+ ", " + loglevel[i]
+						+ ", " + details[i]);
+						System.out.println("Ponawiam...");
+						try { 
+							Thread.sleep(timeToSleep);
+						} catch (InterruptedException e) { 
+							e.printStackTrace();
+						}
 					}
+				} catch (InvalidEventException e1) {
+					e1.printStackTrace();
 				}
+
 				System.out.println("Dodano Event("
 				+ timestamp[i] + ", "
 				+ loglevel[i] + ", "
