@@ -133,7 +133,7 @@ public class LOG {
                         new InputStreamReader(
                           clientSocket.getInputStream()));
                     while ((inputLine = in.readLine()) != null) {
-                        System.out.println(inputLine);
+                        //System.out.println(inputLine);
 
                         try {
                             if (!(inputLine.equals(""))) {
@@ -158,7 +158,6 @@ public class LOG {
             } catch (IOException e) {
                 System.out.println("Koniec pliku /  "
                         + "po³aczenie zerwane / Timeout");
-                System.out.println(e);
             }
         }
     }
