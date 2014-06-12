@@ -41,9 +41,9 @@ public class TestFileInputAdapter {
 	 * sprawdza czy poprawnie wycina kolumne Timestamp.
 	 */
 	@Test
-	public final void testTimestamp() {
+	public final void testTimestamp1() {
 		timestamp = new Timestamp[1];
-		parts = getLog().split(" "); //wyszukiwanie spacji
+		parts = getLog1().split(" "); //wyszukiwanie spacji
 		for (int i = 0; i < 1; ++i) {
 			/**  Format czasu zdarzenia.  */
 			DateFormat df = new SimpleDateFormat(
@@ -51,50 +51,103 @@ public class TestFileInputAdapter {
 
 			Date tmp = null;
 			try {
-				tmp = (Date) df.parse((getLog().substring(1,
+				tmp = (Date) df.parse((getLog1().substring(1,
 						0 + parts[0].length() - 1)));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			timestamp[i] = new Timestamp(tmp.getTime());
 		}
-		assertEquals("Wartosci sa rowne ", timestamp[0], getTimestamp());
+		assertEquals("Wartosci sa rowne ", timestamp[0], getTimestamp1());
+	}
+	
+	/** metoda testujaca
+	 * sprawdza czy poprawnie wycina kolumne Timestamp.
+	 */
+	@Test
+	public final void testTimestamp2() {
+		timestamp = new Timestamp[1];
+		parts = getLog2().split(" "); //wyszukiwanie spacji
+		for (int i = 0; i < 1; ++i) {
+			/**  Format czasu zdarzenia.  */
+			DateFormat df = new SimpleDateFormat(
+				"yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+			Date tmp = null;
+			try {
+				tmp = (Date) df.parse((getLog2().substring(1,
+						0 + parts[0].length() - 1)));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			timestamp[i] = new Timestamp(tmp.getTime());
+		}
+		assertEquals("Wartosci sa rowne ", timestamp[0], getTimestamp2());
 	}
 
 	 /** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne loglevel.
 	 */
 	@Test
-	public final void testLogLevel() {
+	public final void testLogLevel1() {
 		loglevel = new String[1];
-		parts = getLog().split(" "); //wyszukiwanie spacji
+		parts = getLog1().split(" "); //wyszukiwanie spacji
 		for (int i = 0; i < 1; ++i) {
-			loglevel[i] = getLog().substring(parts[0].length() + 1,
+			loglevel[i] = getLog1().substring(parts[0].length() + 1,
 					parts[0].length() + 1 + parts[1].length());
 		}
-		assertEquals("Wartosci sa rowne ", loglevel[0], getLogLevel());
+		assertEquals("Wartosci sa rowne ", loglevel[0], getLogLevel1());
+	}
+	
+	/** metoda testujaca
+	 * sprawdza czy poprawnie wycina kolumne loglevel.
+	 */
+	@Test
+	public final void testLogLevel2() {
+		loglevel = new String[1];
+		parts = getLog2().split(" "); //wyszukiwanie spacji
+		for (int i = 0; i < 1; ++i) {
+			loglevel[i] = getLog2().substring(parts[0].length() + 1,
+					parts[0].length() + 1 + parts[1].length());
+		}
+		assertEquals("Wartosci sa rowne ", loglevel[0], getLogLevel2());
 	}
 
 	 /** metoda testujaca
 	 * sprawdza czy poprawnie wycina kolumne details.
 	 */
 	@Test
-	public final void testDetails() {
+	public final void testDetails1() {
 		details = new String[1];
-		parts = getLog().split(" "); //wyszukiwanie spacji
+		parts = getLog1().split(" "); //wyszukiwanie spacji
 		for (int i = 0; i < 1; ++i) {
-			details[i] = getLog().substring(parts[0].length()
+			details[i] = getLog1().substring(parts[0].length()
 					+ parts[1].length() + 1 + 1 + 1,
-					getLog().length());
+					getLog1().length());
 		}
-		assertEquals("Wartosci sa rowne ", details[0], getDetails());
+		assertEquals("Wartosci sa rowne ", details[0], getDetails1());
+	}
+	
+	/** metoda testujaca
+	 * sprawdza czy poprawnie wycina kolumne details.
+	 */
+	@Test
+	public final void testDetails2() {
+		details = new String[1];
+		parts = getLog2().split(" "); //wyszukiwanie spacji
+		for (int i = 0; i < 1; ++i) {
+			details[i] = getLog2().substring(parts[0].length()
+					+ parts[1].length() + 1 + 1 + 1,
+					getLog2().length());
+		}
+		assertEquals("Wartosci sa rowne ", details[0], getDetails2());
 	}
 
 
 	/** metoda zwracajaca 1 linijke z loga.
 	 * @return linijka z loga
 	 */
-	public final String getLog() {
+	public final String getLog1() {
 		return "(2014-05-22T07:24:45.0813) INFO" 
 				+ "  [is.iWeb.sentinel.logic.business." 
 				+ "Configurator.log(Configurator.java:201)]" 
@@ -102,12 +155,40 @@ public class TestFileInputAdapter {
 				+ "Device.ManagementServer.ConnectionRequestUsername " 
 				+ " user==user";
 	}
+	
+	/** metoda zwracajaca 1 linijke z loga.
+	 * @return linijka z loga
+	 */
+	public final String getLog2() {
+		return "(2014-05-22T07:24:45.0863) INFO " 
+				+ " [org.jboss.stdio.AbstractLoggingWriter." 
+				+ "write(AbstractLoggingWriter.java:71)]" 
+				+ " (default task-54) URI null";
+	}
 
 	/** metoda zwracajaca sparsowany Timestamp.
 	 * @return Timestamp string
 	 */
-	public final Timestamp getTimestamp() {
+	public final Timestamp getTimestamp1() {
 		String tmp = "2014-05-22T07:24:45.0813";
+		/**  Format czasu zdarzenia.  */
+		DateFormat df = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS");
+		Date tmpdata = null;
+		try {
+			tmpdata = (Date) df.parse(tmp);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Timestamp time = new Timestamp(tmpdata.getTime());
+		return time;
+	}
+	
+	/** metoda zwracajaca sparsowany Timestamp.
+	 * @return Timestamp string
+	 */
+	public final Timestamp getTimestamp2() {
+		String tmp = "2014-05-22T07:24:45.0863";
 		/**  Format czasu zdarzenia.  */
 		DateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -124,18 +205,34 @@ public class TestFileInputAdapter {
 	/** metoda zwracajaca "INFO".
 	 * @return "INFO" string
 	 */
-	public final String getLogLevel() {
+	public final String getLogLevel1() {
+		return "INFO";
+	}
+	
+	/** metoda zwracajaca "INFO".
+	 * @return "INFO" string
+	 */
+	public final String getLogLevel2() {
 		return "INFO";
 	}
 
 	/** metoda zwracajaca kolumne details.
 	 * @return details string
 	 */
-	public final String getDetails() {
+	public final String getDetails1() {
 		return "[is.iWeb.sentinel.logic.business." 
 				+ "Configurator.log(Configurator.java:201)]" 
 				+ " (Thread-379544) AO sn=CPE12 Value OK :" 
 				+ "Device.ManagementServer.ConnectionRequestUsername " 
 				+ " user==user";
+	}
+	
+	/** metoda zwracajaca kolumne details.
+	 * @return details string
+	 */
+	public final String getDetails2() {
+		return "[org.jboss.stdio.AbstractLoggingWriter." 
+				+ "write(AbstractLoggingWriter.java:71)]" 
+				+ " (default task-54) URI null";
 	}
 }
