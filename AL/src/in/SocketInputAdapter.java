@@ -10,13 +10,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-
-
-
-
-
-
+import testandexceptions.InvalidEventException;
 import logmanager.Configuration;
 import logmanager.Event;
 import logmanager.QueueManager;
@@ -151,14 +145,20 @@ public class LOG {
                             }
 
 
-                            Event a = new Event(log.timestamp,
-                                    log.loglevel,
-                                    log.details);
-
-                            while (!queue.acceptEvent(a)) {
-                                System.out.println("nie dodalo " + inputLine);
+                            Event a;
+                            try {
+                                a = new Event(log.timestamp,
+                                        log.loglevel,
+                                        log.details);
+                                while (!queue.acceptEvent(a)) {
+                                    System.out.println("nie dodalo "
+                                + inputLine);
+                                }
+                                System.out.println("dodalo " + inputLine);
+                            } catch (InvalidEventException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
                             }
-                            System.out.println("dodalo " + inputLine);
                     }
 
             } catch (ParseException e) {
